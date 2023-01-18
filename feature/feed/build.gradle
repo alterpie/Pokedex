@@ -14,6 +14,7 @@ dependencies {
         libs.compose.navigation,
         libs.compose.material,
         libs.compose.runtime,
+        libs.compose.coil,
         libs.compose.ui.tooling,
 
         libs.kotlin.immutableCollections,
