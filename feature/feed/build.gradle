@@ -1,0 +1,21 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+}
+apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-library.gradle"
+apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-compose.gradle"
+
+android {
+    namespace 'com.assignment.feature.feed'
+}
+
+dependencies {
+    implementation(
+        libs.compose.navigation,
+        libs.compose.material,
+        libs.compose.runtime,
+        libs.compose.ui.tooling,
+
+        libs.kotlin.immutableCollections,
+    )
+}

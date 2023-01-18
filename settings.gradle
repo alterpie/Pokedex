@@ -16,4 +16,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Catawiki"
-include ':app'
+include (
+    ':app',
+    ':feature:feed'
+)

@@ -6,6 +6,8 @@ android {
     defaultConfig {
         minSdk libs.findVersion("min_sdk").get().getRequiredVersion().toInteger()
         targetSdk libs.findVersion("target_sdk").get().getRequiredVersion().toInteger()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
