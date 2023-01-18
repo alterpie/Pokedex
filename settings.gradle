@@ -21,5 +21,6 @@ include (
     ':design',
     ':feature:feed',
     ':feature:details',
-    ':core:pokemon'
+    ':core:pokemon',
+    ':core:network'
 )
