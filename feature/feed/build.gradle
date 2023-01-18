@@ -6,7 +6,7 @@ apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-libra
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-compose.gradle"
 
 android {
-    namespace 'com.assignment.feature.feed'
+    namespace 'com.assignment.catawiki.feature.feed'
 }
 
 dependencies {
