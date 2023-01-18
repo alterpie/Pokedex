@@ -2,6 +2,7 @@ plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
     alias libs.plugins.kotlin.kapt
+    alias libs.plugins.kotlin.serialisation
 }
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-library.gradle"
 
@@ -10,5 +11,15 @@ android {
 }
 
 dependencies {
-    implementation(libs.kotlin.coroutines.core)
+    implementation(
+        libs.kotlin.coroutines.core,
+        libs.kotlin.serialization.json,
+
+        libs.ktor.core,
+        libs.ktor.client.okhttp,
+        libs.ktor.client.contentNegotiation,
+        libs.ktor.client.serialization,
+
+        libs.okhttp.logging,
+    )
 }
