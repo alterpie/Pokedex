@@ -11,7 +11,10 @@ android {
 
 dependencies {
     implementation(
+        projects.feature.feed,
+
         libs.compose.activity,
         libs.compose.material,
+        libs.compose.navigation,
     )
 }

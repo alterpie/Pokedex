@@ -6,9 +6,9 @@ import com.assignment.catawiki.feature.feed.ui.PokemonFeedScreen
 
 const val PokemonFeedScreenRoute = "feed"
 
-fun NavGraphBuilder.pokemonFeedScreen() {
+fun NavGraphBuilder.pokemonFeedScreen(onPokemonClick: () -> Unit) {
     composable(PokemonFeedScreenRoute) {
 
-        PokemonFeedScreen()
+        PokemonFeedScreen(onPokemonClick = onPokemonClick)
     }
 }

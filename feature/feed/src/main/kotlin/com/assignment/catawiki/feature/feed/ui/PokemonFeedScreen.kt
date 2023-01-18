@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
-internal fun PokemonFeedScreen() {
+internal fun PokemonFeedScreen(onPokemonClick: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp)) {
             // TODO add items
