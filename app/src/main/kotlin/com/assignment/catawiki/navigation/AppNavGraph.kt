@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.assignment.catawiki.details.navigation.PokemonDetailsScreenRoute
+import com.assignment.catawiki.details.navigation.pokemonDetailsScreen
 import com.assignment.catawiki.feature.feed.navigation.PokemonFeedScreenRoute
 import com.assignment.catawiki.feature.feed.navigation.pokemonFeedScreen
 
@@ -15,6 +17,7 @@ fun AppNavGraph() {
         navController = navController,
         startDestination = PokemonFeedScreenRoute
     ) {
-        pokemonFeedScreen(onPokemonClick = { /*TODO navigate to details*/ })
+        pokemonFeedScreen(onPokemonClick = { navController.navigate(PokemonDetailsScreenRoute) })
+        pokemonDetailsScreen()
     }
 }
