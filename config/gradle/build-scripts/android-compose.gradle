@@ -1,0 +1,16 @@
+android {
+    buildFeatures {
+        compose true
+    }
+
+    def libs = project.extensions.getByType(VersionCatalogsExtension).named("libs")
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.findVersion("compose-compiler").get().getRequiredVersion()
+    }
+}
+
+dependencies {
+    def libs = project.extensions.getByType(VersionCatalogsExtension).named("libs")
+    implementation platform(libs.findLibrary("compose-bom").get())
+}

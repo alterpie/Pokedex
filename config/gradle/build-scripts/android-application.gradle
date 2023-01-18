@@ -1,0 +1,35 @@
+apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-library.gradle"
+apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-compose.gradle"
+
+android {
+    defaultConfig {
+        applicationId "com.assignment.catawiki"
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
+
+        release {
+            debuggable false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}

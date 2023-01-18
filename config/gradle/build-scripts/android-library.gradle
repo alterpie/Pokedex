@@ -1,0 +1,1 @@
+apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-common.gradle"

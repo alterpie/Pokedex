@@ -1,0 +1,19 @@
+android {
+    def libs = project.extensions.getByType(VersionCatalogsExtension).named("libs")
+
+    compileSdk libs.findVersion("compile_sdk").get().getRequiredVersion().toInteger()
+
+    defaultConfig {
+        minSdk libs.findVersion("min_sdk").get().getRequiredVersion().toInteger()
+        targetSdk libs.findVersion("target_sdk").get().getRequiredVersion().toInteger()
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+}
