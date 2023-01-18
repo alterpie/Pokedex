@@ -12,6 +12,7 @@ android {
 dependencies {
     implementation(
         projects.feature.feed,
+        projects.feature.details,
 
         libs.compose.activity,
         libs.compose.material,

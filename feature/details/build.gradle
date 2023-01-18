@@ -1,0 +1,20 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+}
+apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-library.gradle"
+apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-compose.gradle"
+
+android {
+    namespace 'com.assignment.catawiki.details'
+}
+
+dependencies {
+    implementation(
+        libs.compose.navigation,
+        libs.compose.material,
+        libs.compose.runtime,
+        libs.compose.coil,
+        libs.compose.ui.tooling,
+    )
+}

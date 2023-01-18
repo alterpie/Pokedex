@@ -20,4 +20,5 @@ include (
     ':app',
     ':design',
     ':feature:feed',
+    ':feature:details'
 )
