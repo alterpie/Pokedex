@@ -11,6 +11,8 @@ android {
 
 dependencies {
     implementation(
+        projects.core.pokemon,
+
         libs.compose.navigation,
         libs.compose.material,
         libs.compose.runtime,

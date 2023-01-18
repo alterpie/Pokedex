@@ -20,5 +20,6 @@ include (
     ':app',
     ':design',
     ':feature:feed',
-    ':feature:details'
+    ':feature:details',
+    ':core:pokemon'
 )
