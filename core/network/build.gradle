@@ -7,6 +7,11 @@ apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-libra
 
 android {
     namespace 'com.assignment.catawiki.network'
+
+    defaultConfig {
+        buildConfigField("String", "HOST", "\"pokeapi.co\"")
+        buildConfigField("String", "BASE_PATH", "\"api/v2\"")
+    }
  }
 
 dependencies {
@@ -16,7 +21,12 @@ dependencies {
 
         libs.ktor.core,
         libs.ktor.client.okhttp,
+        libs.ktor.client.serialization,
         libs.ktor.client.contentNegotiation,
         libs.okhttp.logging,
+        libs.kotlin.serialization.json,
     )
+
+    kapt(libs.dagger.compiler)
+
 }

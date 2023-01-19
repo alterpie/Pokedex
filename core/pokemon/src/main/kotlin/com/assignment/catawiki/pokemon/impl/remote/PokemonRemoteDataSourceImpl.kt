@@ -5,8 +5,9 @@ import com.assignment.catawiki.pokemon.impl.remote.model.PokemonSpeciesFeedPagin
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import javax.inject.Inject
 
-internal class PokemonRemoteDataSourceImpl(
+internal class PokemonRemoteDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient,
 ) : PokemonRemoteDataSource {
 
