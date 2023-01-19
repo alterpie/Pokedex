@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PokemonSpeciesRepository {
 
-    fun getPokemonFeed(): Flow<Result<List<PokemonSpeciesFeedItem>>>
+    fun getPokemonFeed(): Flow<List<PokemonSpeciesFeedItem>>
     fun getPokemonDetails(id: Long): Flow<Result<PokemonDetails>>
     suspend fun getNextPokemonPage(): Result<Unit>
 }

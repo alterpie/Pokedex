@@ -5,11 +5,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -20,12 +24,27 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.assignment.catawiki.feature.feed.PokemonFeedContract
+import com.assignment.catawiki.feature.feed.PokemonFeedContract.State
 
 @Composable
-internal fun PokemonFeedScreen(onPokemonClick: () -> Unit) {
+internal fun PokemonFeedScreen(
+    state: State,
+    onPokemonClick: (Long) -> Unit
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp)) {
-            // TODO add items
+            itemsIndexed(state.items) { index, item ->
+                PokemonItem(
+                    name = item.name,
+                    image = item.imageUrl,
+                    onClick = { onPokemonClick(item.id) }
+                )
+
+                if (index != state.items.lastIndex) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
         }
     }
 }
@@ -36,24 +55,25 @@ private fun PokemonItem(
     image: String,
     onClick: () -> Unit,
 ) {
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = onClick)
+            .padding(16.dp)
+            .height(60.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
+            modifier = Modifier.size(48.dp),
             painter = rememberAsyncImagePainter(model = image),
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
 
         BasicText(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 16.dp, bottom = 16.dp),
-            text = name
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = name,
         )
     }
 }

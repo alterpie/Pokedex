@@ -9,5 +9,10 @@ android {
 }
 
 dependencies {
+    implementation(
+        libs.androidx.lifecycle.viewModel,
+        libs.androidx.lifecycle.viewModel.savedstate,
+    )
+
     api(libs.dagger)
 }

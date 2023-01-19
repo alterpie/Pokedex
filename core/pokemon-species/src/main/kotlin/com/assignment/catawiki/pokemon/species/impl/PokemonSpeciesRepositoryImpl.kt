@@ -22,9 +22,8 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
 
     private val inMemoryPokemonFeed = MutableSharedFlow<List<PokemonSpeciesFeedItem>>()
 
-    override fun getPokemonFeed(): Flow<Result<List<PokemonSpeciesFeedItem>>> {
+    override fun getPokemonFeed(): Flow<List<PokemonSpeciesFeedItem>> {
         return inMemoryPokemonFeed
-            .map { Result.success(it) }
     }
 
     override fun getPokemonDetails(id: Long): Flow<Result<PokemonDetails>> {
