@@ -6,9 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class PokemonSpeciesFeedPaginationDto(
     @SerialName("count")
-    val count: Int,
+    val count: Long,
     @SerialName("next")
-    val next: String,
+    val next: String?,
     @SerialName("results")
     val results: List<PokemonSpeciesFeedItemDto>,
 )

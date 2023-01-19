@@ -1,0 +1,13 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+}
+apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-library.gradle"
+
+android {
+    namespace 'com.assignment.catawiki.common'
+}
+
+dependencies {
+    implementation(libs.kotlin.coroutines.core)
+}

@@ -24,4 +24,5 @@ include (
     ':core:pokemon',
     ':core:network',
     ':core:di',
+    ':core:common'
 )

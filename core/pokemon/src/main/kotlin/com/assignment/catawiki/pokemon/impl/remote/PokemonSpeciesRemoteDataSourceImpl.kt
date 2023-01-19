@@ -7,9 +7,9 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import javax.inject.Inject
 
-internal class PokemonRemoteDataSourceImpl @Inject constructor(
+internal class PokemonSpeciesRemoteDataSourceImpl @Inject constructor(
     private val httpClient: HttpClient,
-) : PokemonRemoteDataSource {
+) : PokemonSpeciesRemoteDataSource {
 
     override suspend fun fetchPokemonPage(path: String): PokemonSpeciesFeedPaginationDto {
         return httpClient.get(path).body()

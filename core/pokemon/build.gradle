@@ -9,15 +9,23 @@ apply from: "${rootProject.projectDir}/config/gradle/build-scripts/unit-tests.gr
 
 android {
     namespace 'com.assignment.catawiki.pokemon'
+
+    defaultConfig {
+        buildConfigField("String", "POKEMON_IMAGE_URL", "\"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\"")
+        buildConfigField("String", "INITIAL_FEED_URL_PATH", "\"pokemon-species\"")
+    }
 }
 
 dependencies {
     implementation(
+        projects.core.common,
         projects.core.network,
         projects.core.di,
 
         libs.kotlin.coroutines.core,
         libs.kotlin.serialization.json,
+
+        libs.androidx.datastore.preferences,
 
         libs.ktor.core,
         libs.ktor.client.serialization,
