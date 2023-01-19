@@ -1,3 +1,16 @@
+android {
+    kotlinOptions {
+        kotlinOptions.freeCompilerArgs += ['-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi']
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.all { test ->
+            useJUnitPlatform()
+        }
+    }
+}
+
 dependencies {
     testRuntimeOnly(libs.junit.engine)
 

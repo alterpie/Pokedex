@@ -40,6 +40,7 @@ ktor = "2.2.1"
 junit5 = "5.9.1"
 mockk = "1.13.3"
 turbine = "0.12.1"
+kotest = "5.5.4"
 
 # Other
 immutableCollections = "0.3.5"
@@ -97,9 +98,10 @@ junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref 
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+kotest-assertions = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
 
 [bundles]
-unitTestBundle = ["junit-jupiter", "junit-params", "mockk", "turbine", "kotlin-coroutines-test"]
+unitTestBundle = ["junit-jupiter", "junit-params", "mockk", "turbine", "kotlin-coroutines-test", "kotest-assertions"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
