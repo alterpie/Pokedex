@@ -12,6 +12,8 @@ android {
 dependencies {
 
     implementation(
+        projects.core.di,
+
         libs.ktor.core,
         libs.ktor.client.okhttp,
         libs.ktor.client.contentNegotiation,
