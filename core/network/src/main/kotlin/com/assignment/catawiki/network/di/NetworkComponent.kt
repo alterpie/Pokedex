@@ -20,6 +20,8 @@ import javax.inject.Singleton
 @Singleton
 interface NetworkComponent {
 
+    val httpClient: HttpClient
+
     @Component.Factory
     interface Factory {
         fun create(): NetworkComponent

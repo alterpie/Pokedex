@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 internal class PokemonFeedViewModel(
     savedStateHandle: SavedStateHandle,
@@ -26,5 +27,9 @@ internal class PokemonFeedViewModel(
                 _state.update { it.copy(items = feed.toImmutableList()) }
             }
             .launchIn(viewModelScope)
+
+        viewModelScope.launch {
+            pokemonSpeciesRepository.getNextPokemonPage()
+        }
     }
 }

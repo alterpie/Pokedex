@@ -2,6 +2,7 @@ package com.assignment.catawiki.feature.feed.navigation
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -13,7 +14,9 @@ const val PokemonFeedScreenRoute = "feed"
 
 fun NavGraphBuilder.pokemonFeedScreen(onPokemonClick: (Long) -> Unit) {
     composable(PokemonFeedScreenRoute) {
-        val viewModel = viewModel<PokemonFeedViewModel>(factory = PokemonFeedViewModelFactory())
+        val viewModel = viewModel<PokemonFeedViewModel>(
+            factory = PokemonFeedViewModelFactory(LocalContext.current)
+        )
         val state by viewModel.state.collectAsState()
 
         PokemonFeedScreen(

@@ -30,4 +30,6 @@ dependencies {
         libs.ktor.core,
         libs.ktor.client.serialization,
     )
+
+    kapt(libs.dagger.compiler)
 }

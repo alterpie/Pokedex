@@ -1,8 +1,10 @@
 package com.assignment.catawiki.feature.feed.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,12 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.assignment.catawiki.feature.feed.PokemonFeedContract
 import com.assignment.catawiki.feature.feed.PokemonFeedContract.State
+import java.util.*
 
 @Composable
 internal fun PokemonFeedScreen(
@@ -33,7 +37,7 @@ internal fun PokemonFeedScreen(
     onPokemonClick: (Long) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp)) {
+        LazyColumn(contentPadding = PaddingValues(16.dp)) {
             itemsIndexed(state.items) { index, item ->
                 PokemonItem(
                     name = item.name,
@@ -46,6 +50,9 @@ internal fun PokemonFeedScreen(
                 }
             }
         }
+
+        TopGradient()
+        BottomGradient()
     }
 }
 
@@ -65,7 +72,7 @@ private fun PokemonItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier.size(60.dp),
             painter = rememberAsyncImagePainter(model = image),
             contentDescription = null,
             contentScale = ContentScale.Crop,
@@ -73,9 +80,45 @@ private fun PokemonItem(
 
         BasicText(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = name,
+            text = name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
         )
     }
+}
+
+@Composable
+private fun BoxScope.TopGradient() {
+    Box(
+        modifier = Modifier
+            .align(Alignment.TopCenter)
+            .fillMaxWidth()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Black,
+                        Color.Transparent
+                    )
+                )
+            )
+            .height(40.dp)
+    )
+}
+
+@Composable
+private fun BoxScope.BottomGradient() {
+    Box(
+        modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .fillMaxWidth()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        Color.Black
+                    )
+                )
+            )
+            .height(40.dp)
+    )
 }
 
 @Preview
