@@ -2,8 +2,9 @@ package com.assignment.catawiki.pokemon.species.impl.mapper
 
 import android.net.Uri
 import com.assignment.catawiki.pokemon.species.BuildConfig
-import com.assignment.catawiki.pokemon.species.api.model.PokemonDetails
-import com.assignment.catawiki.pokemon.species.impl.remote.model.EvolutionChainDto
+import com.assignment.catawiki.pokemon.species.data.species.mapper.EvolutionChainDtoMapper
+import com.assignment.catawiki.pokemon.species.domain.model.PokemonDetails
+import com.assignment.catawiki.pokemon.species.data.species.remote.model.EvolutionChainDto
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk

@@ -14,7 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.assignment.catawiki.details.mvi.PokemonDetailsContract.State
-import com.assignment.catawiki.pokemon.species.api.model.PokemonDetails
+import com.assignment.catawiki.pokemon.species.domain.model.PokemonDetails
 
 @Composable
 internal fun PokemonDetailsScreen(state: State) {

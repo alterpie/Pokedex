@@ -1,7 +1,7 @@
 package com.assignment.catawiki.details.di
 
 import com.assignment.catawiki.details.PokemonDetailsViewModelFactory
-import com.assignment.catawiki.pokemon.species.api.PokemonSpeciesRepository
+import com.assignment.catawiki.pokemon.species.domain.PokemonSpeciesRepository
 import dagger.BindsInstance
 import dagger.Component
 

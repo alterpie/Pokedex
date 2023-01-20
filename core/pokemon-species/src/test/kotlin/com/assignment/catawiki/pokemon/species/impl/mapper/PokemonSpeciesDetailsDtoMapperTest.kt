@@ -1,7 +1,8 @@
 package com.assignment.catawiki.pokemon.species.impl.mapper
 
-import com.assignment.catawiki.pokemon.species.api.model.PokemonDetails
-import com.assignment.catawiki.pokemon.species.impl.remote.model.PokemonSpeciesDetailsDto
+import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDetailsDtoMapper
+import com.assignment.catawiki.pokemon.species.domain.model.PokemonDetails
+import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesDetailsDto
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 

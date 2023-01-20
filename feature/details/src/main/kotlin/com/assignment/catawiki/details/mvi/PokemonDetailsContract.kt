@@ -3,7 +3,7 @@ package com.assignment.catawiki.details.mvi
 import com.assignment.catawiki.mvi.UiEffect
 import com.assignment.catawiki.mvi.UiEvent
 import com.assignment.catawiki.mvi.UiState
-import com.assignment.catawiki.pokemon.species.api.model.PokemonDetails
+import com.assignment.catawiki.pokemon.species.domain.model.PokemonDetails
 
 interface PokemonDetailsContract {
 

@@ -1,10 +1,11 @@
 package com.assignment.catawiki.pokemon.species.impl
 
 import com.assignment.catawiki.pokemon.species.BuildConfig
-import com.assignment.catawiki.pokemon.species.impl.local.pagination.PokemonSpeciesFeedPaginationDataSource
-import com.assignment.catawiki.pokemon.species.impl.local.pagination.model.PaginationData
-import com.assignment.catawiki.pokemon.species.impl.remote.PokemonSpeciesRemoteDataSource
-import com.assignment.catawiki.pokemon.species.impl.remote.model.PokemonSpeciesFeedPaginationDto
+import com.assignment.catawiki.pokemon.species.data.species.PokemonSpeciesRepositoryImpl
+import com.assignment.catawiki.pokemon.species.data.pagination.PokemonSpeciesFeedPaginationDataSource
+import com.assignment.catawiki.pokemon.species.data.pagination.model.PaginationData
+import com.assignment.catawiki.pokemon.species.data.species.remote.PokemonSpeciesRemoteDataSource
+import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesFeedPaginationDto
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
