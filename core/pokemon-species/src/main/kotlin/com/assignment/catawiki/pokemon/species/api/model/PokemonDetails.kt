@@ -5,9 +5,9 @@ data class PokemonDetails(
     val name: String,
     val description: String,
     val captureRate: Int,
-    val evolution: Evolution?,
+    val evolutionChain: EvolutionChain?,
 ) {
-    data class Evolution(
+    data class EvolutionChain(
         val name: String,
         val imageUrl: String,
     )

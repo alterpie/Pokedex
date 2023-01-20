@@ -1,6 +1,7 @@
 plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.kapt
 }
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-library.gradle"
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-compose.gradle"
@@ -11,6 +12,9 @@ android {
 
 dependencies {
     implementation(
+        projects.design,
+        projects.mvi,
+        projects.core.di,
         projects.core.pokemonSpecies,
 
         libs.compose.navigation,
@@ -19,4 +23,6 @@ dependencies {
         libs.compose.coil,
         libs.compose.ui.tooling,
     )
+
+    kapt(libs.dagger.compiler)
 }
