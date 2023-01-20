@@ -1,10 +1,11 @@
 package com.assignment.catawiki.pokemon.species.domain.model
 
-data class PokemonDetails(
+data class PokemonSpecies(
     val id: Long,
     val name: String,
-    val description: String,
-    val captureRate: Int,
+    val imageUrl: String,
+    val description: String?,
+    val captureRate: Int?,
     val evolution: Evolution?,
 ) {
     sealed interface Evolution {

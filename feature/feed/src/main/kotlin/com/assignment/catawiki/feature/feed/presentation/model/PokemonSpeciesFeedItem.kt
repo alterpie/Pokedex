@@ -1,4 +1,4 @@
-package com.assignment.catawiki.pokemon.species.domain.model
+package com.assignment.catawiki.feature.feed.presentation.model
 
 data class PokemonSpeciesFeedItem(
     val id: Long,

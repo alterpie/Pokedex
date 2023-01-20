@@ -13,7 +13,7 @@ class PokemonDetailsActor @Inject constructor(
 ) : Actor<Event, Effect> {
 
     override fun invoke(event: Event): Flow<Effect> = when (event) {
-        is Event.GetPokemonDetails -> pokemonSpeciesRepository.getPokemonDetails(event.id)
+        is Event.GetPokemonDetails -> pokemonSpeciesRepository.getPokemonSpecies(event.id)
             .map { result ->
                 result.fold(
                     onSuccess = { Effect.DisplayPokemonDetails(it) },

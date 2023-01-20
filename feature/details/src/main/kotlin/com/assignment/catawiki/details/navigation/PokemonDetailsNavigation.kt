@@ -8,7 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.assignment.catawiki.details.PokemonDetailsViewModel
+import com.assignment.catawiki.details.presentation.PokemonDetailsViewModel
 import com.assignment.catawiki.details.di.PokemonDetailsComponentInjector
 import com.assignment.catawiki.details.ui.PokemonDetailsScreen
 

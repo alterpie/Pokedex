@@ -3,7 +3,7 @@ package com.assignment.catawiki.details.mvi
 import com.assignment.catawiki.mvi.UiEffect
 import com.assignment.catawiki.mvi.UiEvent
 import com.assignment.catawiki.mvi.UiState
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonDetails
+import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 
 interface PokemonDetailsContract {
 
@@ -13,7 +13,7 @@ interface PokemonDetailsContract {
 
     sealed interface Effect : UiEffect {
         data class DisplayPokemonDetails(
-            val pokemonDetails: PokemonDetails,
+            val pokemonSpecies: PokemonSpecies,
         ) : Effect
 
         object DisplayError : Effect // temporary
@@ -23,6 +23,6 @@ interface PokemonDetailsContract {
         val name: String = "",
         val description: String = "",
         val captureRate: Int? = null,
-        val evolution: PokemonDetails.Evolution? = null,
+        val evolution: PokemonSpecies.Evolution? = null,
     ) : UiState
 }

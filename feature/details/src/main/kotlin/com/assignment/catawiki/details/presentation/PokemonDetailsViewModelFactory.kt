@@ -1,4 +1,4 @@
-package com.assignment.catawiki.details
+package com.assignment.catawiki.details.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import com.assignment.catawiki.details.mvi.PokemonDetailsFeature

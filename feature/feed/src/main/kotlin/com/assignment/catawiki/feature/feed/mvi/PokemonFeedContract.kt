@@ -3,7 +3,7 @@ package com.assignment.catawiki.feature.feed.mvi
 import com.assignment.catawiki.mvi.UiEffect
 import com.assignment.catawiki.mvi.UiEvent
 import com.assignment.catawiki.mvi.UiState
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpeciesFeedItem
+import com.assignment.catawiki.feature.feed.presentation.model.PokemonSpeciesFeedItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

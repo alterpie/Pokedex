@@ -1,11 +1,11 @@
-package com.assignment.catawiki.pokemon.species.data.species.local.species
+package com.assignment.catawiki.pokemon.species.data.species.local
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
-import com.assignment.catawiki.pokemon.species.data.species.local.species.model.SpeciesEntity
-import com.assignment.catawiki.pokemon.species.data.species.local.species.model.UpdateSpeciesDetails
+import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
+import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesDetails
 import kotlinx.coroutines.flow.Flow
 
 @Dao

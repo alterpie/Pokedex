@@ -2,8 +2,8 @@ package com.assignment.catawiki.pokemon.species.data.species.mapper
 
 import android.net.Uri
 import com.assignment.catawiki.pokemon.species.BuildConfig
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonDetails
 import com.assignment.catawiki.pokemon.species.data.species.remote.model.EvolutionChainDto
+import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import javax.inject.Inject
 
 internal class EvolutionChainDtoMapper @Inject constructor() {
@@ -11,11 +11,11 @@ internal class EvolutionChainDtoMapper @Inject constructor() {
     fun map(
         from: EvolutionChainDto,
         forSpeciesName: String
-    ): PokemonDetails.Evolution = with(from) {
+    ): PokemonSpecies.Evolution = with(from) {
         val species = findEvolutionTargetSpecies(from.chain, forSpeciesName)
-            ?: return@with PokemonDetails.Evolution.Final
+            ?: return@with PokemonSpecies.Evolution.Final
         val id = Uri.parse(species.url).pathSegments.last().toLong()
-        PokemonDetails.Evolution.Next(
+        PokemonSpecies.Evolution.Next(
             species.name,
             "${BuildConfig.POKEMON_IMAGE_URL}${id}.png"
         )

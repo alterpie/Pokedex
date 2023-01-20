@@ -3,8 +3,8 @@ package com.assignment.catawiki.pokemon.species.impl.mapper
 import android.net.Uri
 import com.assignment.catawiki.pokemon.species.BuildConfig
 import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesFeedItemDtoMapper
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpeciesFeedItem
 import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesFeedItemDto
+import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -25,10 +25,13 @@ internal class PokemonSpeciesFeedItemDtoMapperTest {
 
         val mapped = mapper.map(dto)
 
-        mapped shouldBe PokemonSpeciesFeedItem(
+        mapped shouldBe PokemonSpecies(
             42L,
             "name",
-            "${BuildConfig.POKEMON_IMAGE_URL}42.png"
+            "${BuildConfig.POKEMON_IMAGE_URL}42.png",
+            null,
+            null,
+            null,
         )
         unmockkStatic(Uri::class)
     }

@@ -1,12 +1,11 @@
 package com.assignment.catawiki.pokemon.species.domain
 
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonDetails
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpeciesFeedItem
+import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import kotlinx.coroutines.flow.Flow
 
 interface PokemonSpeciesRepository {
 
-    fun getPokemonFeed(): Flow<List<PokemonSpeciesFeedItem>>
-    fun getPokemonDetails(id: Long): Flow<Result<PokemonDetails>>
+    fun getAllPokemonSpecies(): Flow<List<PokemonSpecies>>
+    fun getPokemonSpecies(id: Long): Flow<Result<PokemonSpecies>>
     suspend fun getNextPokemonPage(): Result<Unit>
 }

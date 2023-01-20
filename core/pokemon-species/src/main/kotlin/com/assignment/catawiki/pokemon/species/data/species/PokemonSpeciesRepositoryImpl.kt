@@ -2,15 +2,14 @@ package com.assignment.catawiki.pokemon.species.data.species
 
 import com.assignment.catawiki.common.runCatchingFromSuspend
 import com.assignment.catawiki.pokemon.species.BuildConfig
-import com.assignment.catawiki.pokemon.species.domain.PokemonSpeciesRepository
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonDetails
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpeciesFeedItem
 import com.assignment.catawiki.pokemon.species.data.pagination.PokemonSpeciesFeedPaginationDataSource
 import com.assignment.catawiki.pokemon.species.data.pagination.model.PaginationData
 import com.assignment.catawiki.pokemon.species.data.species.mapper.EvolutionChainDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDetailsDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesFeedItemDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.remote.PokemonSpeciesRemoteDataSource
+import com.assignment.catawiki.pokemon.species.domain.PokemonSpeciesRepository
+import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
@@ -24,13 +23,13 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
     private val evolutionChainDtoMapper: EvolutionChainDtoMapper,
 ) : PokemonSpeciesRepository {
 
-    private val inMemoryPokemonFeed = MutableStateFlow<List<PokemonSpeciesFeedItem>>(emptyList())
+    private val inMemoryPokemonFeed = MutableStateFlow<List<PokemonSpecies>>(emptyList())
 
-    override fun getPokemonFeed(): Flow<List<PokemonSpeciesFeedItem>> {
+    override fun getAllPokemonSpecies(): Flow<List<PokemonSpecies>> {
         return inMemoryPokemonFeed
     }
 
-    override fun getPokemonDetails(id: Long): Flow<Result<PokemonDetails>> {
+    override fun getPokemonSpecies(id: Long): Flow<Result<PokemonSpecies>> {
         return flow {
             val detailsResponse = runCatchingFromSuspend {
                 remoteDataSource.fetchPokemonDetails(id)

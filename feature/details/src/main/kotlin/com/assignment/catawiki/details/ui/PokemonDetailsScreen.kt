@@ -14,7 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.assignment.catawiki.details.mvi.PokemonDetailsContract.State
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonDetails
+import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 
 @Composable
 internal fun PokemonDetailsScreen(state: State) {
@@ -33,10 +33,10 @@ internal fun PokemonDetailsScreen(state: State) {
             )
         }
         when (state.evolution) {
-            PokemonDetails.Evolution.Final -> {
+            PokemonSpecies.Evolution.Final -> {
                 BasicText(text = stringResource(com.assignment.catawiki.design.R.string.final_evolution_chain))
             }
-            is PokemonDetails.Evolution.Next -> {
+            is PokemonSpecies.Evolution.Next -> {
                 BasicText(text = state.evolution.name)
                 Image(
                     modifier = Modifier.size(80.dp),

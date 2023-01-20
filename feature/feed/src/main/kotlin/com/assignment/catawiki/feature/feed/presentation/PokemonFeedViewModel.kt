@@ -1,4 +1,4 @@
-package com.assignment.catawiki.feature.feed
+package com.assignment.catawiki.feature.feed.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.Effect

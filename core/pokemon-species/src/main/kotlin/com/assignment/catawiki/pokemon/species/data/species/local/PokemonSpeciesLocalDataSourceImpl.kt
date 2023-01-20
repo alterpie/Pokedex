@@ -1,9 +1,7 @@
 package com.assignment.catawiki.pokemon.species.data.species.local
 
-import com.assignment.catawiki.pokemon.species.data.species.local.species.PokemonSpeciesLocalDataSource
-import com.assignment.catawiki.pokemon.species.data.species.local.species.SpeciesDao
-import com.assignment.catawiki.pokemon.species.data.species.local.species.model.SpeciesEntity
-import com.assignment.catawiki.pokemon.species.data.species.local.species.model.UpdateSpeciesDetails
+import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
+import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesDetails
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

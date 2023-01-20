@@ -3,16 +3,11 @@ package com.assignment.catawiki.feature.feed.navigation
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.assignment.catawiki.feature.feed.PokemonFeedViewModel
-import com.assignment.catawiki.feature.feed.PokemonFeedViewModelFactory
+import com.assignment.catawiki.feature.feed.presentation.PokemonFeedViewModel
 import com.assignment.catawiki.feature.feed.di.PokemonFeedComponentInjector
-import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.Event
 import com.assignment.catawiki.feature.feed.ui.PokemonFeedScreen
 

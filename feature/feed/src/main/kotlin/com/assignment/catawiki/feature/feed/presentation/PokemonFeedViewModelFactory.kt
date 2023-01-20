@@ -1,9 +1,8 @@
-package com.assignment.catawiki.feature.feed
+package com.assignment.catawiki.feature.feed.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import com.assignment.catawiki.di.viewModel.GenericViewModelFactory
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedFeature
-import com.assignment.catawiki.pokemon.species.di.PokemonSpeciesCoreComponentInjector
 import javax.inject.Inject
 
 class PokemonFeedViewModelFactory @Inject constructor(
