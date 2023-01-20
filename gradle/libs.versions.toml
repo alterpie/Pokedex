@@ -102,6 +102,7 @@ kotest-assertions = { module = "io.kotest:kotest-assertions-core-jvm", version.r
 
 [bundles]
 unitTestBundle = ["junit-jupiter", "junit-params", "mockk", "turbine", "kotlin-coroutines-test", "kotest-assertions"]
+room = ["room-runtime", "room-ktx"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

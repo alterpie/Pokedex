@@ -1,6 +1,6 @@
-package com.assignment.catawiki.pokemon.species.impl.local
+package com.assignment.catawiki.pokemon.species.impl.local.pagination
 
-import com.assignment.catawiki.pokemon.species.impl.local.model.PaginationData
+import com.assignment.catawiki.pokemon.species.impl.local.pagination.model.PaginationData
 
 internal interface PokemonSpeciesFeedPaginationDataSource {
 

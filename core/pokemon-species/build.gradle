@@ -3,6 +3,7 @@ plugins {
     alias libs.plugins.kotlin.android
     alias libs.plugins.kotlin.kapt
     alias libs.plugins.kotlin.serialisation
+    alias libs.plugins.ksp
 }
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-library.gradle"
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/unit-tests.gradle"
@@ -29,7 +30,10 @@ dependencies {
 
         libs.ktor.core,
         libs.ktor.client.serialization,
+
+        libs.bundles.room,
     )
 
+    ksp(libs.room.compiler)
     kapt(libs.dagger.compiler)
 }

@@ -4,10 +4,16 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.assignment.catawiki.pokemon.species.api.PokemonSpeciesRepository
 import com.assignment.catawiki.pokemon.species.impl.PokemonSpeciesRepositoryImpl
-import com.assignment.catawiki.pokemon.species.impl.local.PokemonSpeciesFeedPaginationDataSource
-import com.assignment.catawiki.pokemon.species.impl.local.model.PokemonSpeciesFeedPaginationDataSourceImpl
+import com.assignment.catawiki.pokemon.species.impl.local.PokemonSpeciesLocalDataSourceImpl
+import com.assignment.catawiki.pokemon.species.impl.local.SpeciesDatabase
+import com.assignment.catawiki.pokemon.species.impl.local.pagination.PokemonSpeciesFeedPaginationDataSource
+import com.assignment.catawiki.pokemon.species.impl.local.pagination.model.PokemonSpeciesFeedPaginationDataSourceImpl
+import com.assignment.catawiki.pokemon.species.impl.local.species.PokemonSpeciesLocalDataSource
+import com.assignment.catawiki.pokemon.species.impl.local.species.SpeciesDao
 import com.assignment.catawiki.pokemon.species.impl.remote.PokemonSpeciesRemoteDataSource
 import com.assignment.catawiki.pokemon.species.impl.remote.PokemonSpeciesRemoteDataSourceImpl
 import dagger.Binds
@@ -42,6 +48,9 @@ private interface PokemonCoreModule {
     @Binds
     fun remoteDataSource(impl: PokemonSpeciesRemoteDataSourceImpl): PokemonSpeciesRemoteDataSource
 
+    @Binds
+    fun localDataSource(impl: PokemonSpeciesLocalDataSourceImpl): PokemonSpeciesLocalDataSource
+
     @Singleton
     @Binds
     fun repository(impl: PokemonSpeciesRepositoryImpl): PokemonSpeciesRepository
@@ -54,6 +63,21 @@ private object PokemonCoreProvidesModule {
     @Provides
     fun pokemonSpeciesCoreDataStore(context: Context): DataStore<Preferences> {
         return context.pokemonSpeciesCoreDataStore
+    }
+
+    @Provides
+    @Singleton
+    fun speciesDatabase(context: Context): SpeciesDatabase {
+        return Room.databaseBuilder(
+            context,
+            SpeciesDatabase::class.java,
+            "species-database"
+        ).build()
+    }
+
+    @Provides
+    fun speciesDao(speciesDatabase: SpeciesDatabase): SpeciesDao {
+        return speciesDatabase.speciesDao()
     }
 }
 

@@ -1,11 +1,11 @@
-package com.assignment.catawiki.pokemon.species.impl.local.model
+package com.assignment.catawiki.pokemon.species.impl.local.pagination.model
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.assignment.catawiki.pokemon.species.impl.local.PokemonSpeciesFeedPaginationDataSource
+import com.assignment.catawiki.pokemon.species.impl.local.pagination.PokemonSpeciesFeedPaginationDataSource
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

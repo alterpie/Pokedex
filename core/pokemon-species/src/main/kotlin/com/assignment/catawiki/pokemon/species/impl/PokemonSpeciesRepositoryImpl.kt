@@ -5,16 +5,14 @@ import com.assignment.catawiki.pokemon.species.BuildConfig
 import com.assignment.catawiki.pokemon.species.api.PokemonSpeciesRepository
 import com.assignment.catawiki.pokemon.species.api.model.PokemonDetails
 import com.assignment.catawiki.pokemon.species.api.model.PokemonSpeciesFeedItem
-import com.assignment.catawiki.pokemon.species.impl.local.PokemonSpeciesFeedPaginationDataSource
-import com.assignment.catawiki.pokemon.species.impl.local.model.PaginationData
+import com.assignment.catawiki.pokemon.species.impl.local.pagination.PokemonSpeciesFeedPaginationDataSource
+import com.assignment.catawiki.pokemon.species.impl.local.pagination.model.PaginationData
 import com.assignment.catawiki.pokemon.species.impl.mapper.EvolutionChainDtoMapper
 import com.assignment.catawiki.pokemon.species.impl.mapper.PokemonSpeciesDetailsDtoMapper
 import com.assignment.catawiki.pokemon.species.impl.mapper.PokemonSpeciesFeedItemDtoMapper
 import com.assignment.catawiki.pokemon.species.impl.remote.PokemonSpeciesRemoteDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
