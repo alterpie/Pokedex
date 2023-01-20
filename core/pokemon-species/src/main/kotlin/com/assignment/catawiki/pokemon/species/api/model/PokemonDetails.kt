@@ -5,10 +5,14 @@ data class PokemonDetails(
     val name: String,
     val description: String,
     val captureRate: Int,
-    val evolutionChain: EvolutionChain?,
+    val evolution: Evolution?,
 ) {
-    data class EvolutionChain(
-        val name: String,
-        val imageUrl: String,
-    )
+    sealed interface Evolution {
+        data class Next(
+            val name: String,
+            val imageUrl: String,
+        ) : Evolution
+
+        object Final : Evolution
+    }
 }

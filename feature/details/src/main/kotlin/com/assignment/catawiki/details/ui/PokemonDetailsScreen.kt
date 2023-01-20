@@ -9,10 +9,12 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.assignment.catawiki.details.mvi.PokemonDetailsContract.State
+import com.assignment.catawiki.pokemon.species.api.model.PokemonDetails
 
 @Composable
 internal fun PokemonDetailsScreen(state: State) {
@@ -30,13 +32,19 @@ internal fun PokemonDetailsScreen(state: State) {
                 style = TextStyle.Default.copy(color = captureRateColor)
             )
         }
-        if (state.evolvesIntoImage != null && state.evolvesIntoName != null) {
-            BasicText(text = state.evolvesIntoName)
-            Image(
-                modifier = Modifier.size(80.dp),
-                painter = rememberAsyncImagePainter(model = state.evolvesIntoImage),
-                contentDescription = null,
-            )
+        when (state.evolution) {
+            PokemonDetails.Evolution.Final -> {
+                BasicText(text = stringResource(com.assignment.catawiki.design.R.string.final_evolution_chain))
+            }
+            is PokemonDetails.Evolution.Next -> {
+                BasicText(text = state.evolution.name)
+                Image(
+                    modifier = Modifier.size(80.dp),
+                    painter = rememberAsyncImagePainter(model = state.evolution.imageUrl),
+                    contentDescription = null,
+                )
+            }
+            null -> Unit
         }
     }
 }

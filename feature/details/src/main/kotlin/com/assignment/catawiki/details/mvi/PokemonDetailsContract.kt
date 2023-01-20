@@ -23,7 +23,6 @@ interface PokemonDetailsContract {
         val name: String = "",
         val description: String = "",
         val captureRate: Int? = null,
-        val evolvesIntoName: String? = null,
-        val evolvesIntoImage: String? = null,
+        val evolution: PokemonDetails.Evolution? = null,
     ) : UiState
 }

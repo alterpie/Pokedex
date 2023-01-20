@@ -1,5 +1,6 @@
 package com.assignment.catawiki.pokemon.species.impl.remote
 
+import com.assignment.catawiki.pokemon.species.impl.remote.model.EvolutionChainDto
 import com.assignment.catawiki.pokemon.species.impl.remote.model.PokemonSpeciesDetailsDto
 import com.assignment.catawiki.pokemon.species.impl.remote.model.PokemonSpeciesFeedPaginationDto
 import io.ktor.client.HttpClient
@@ -17,5 +18,9 @@ internal class PokemonSpeciesRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun fetchPokemonDetails(id: Long): PokemonSpeciesDetailsDto {
         return httpClient.get("pokemon-species/$id").body()
+    }
+
+    override suspend fun fetchEvolutionChain(path: String): EvolutionChainDto {
+        return httpClient.get(path).body()
     }
 }

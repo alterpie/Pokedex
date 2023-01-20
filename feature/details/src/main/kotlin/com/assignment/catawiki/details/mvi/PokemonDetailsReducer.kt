@@ -13,8 +13,7 @@ class PokemonDetailsReducer @Inject constructor(): Reducer<Effect, State> {
             name = effect.pokemonDetails.name,
             description = effect.pokemonDetails.description,
             captureRate = effect.pokemonDetails.captureRate,
-            evolvesIntoName = effect.pokemonDetails.evolutionChain?.name,
-            evolvesIntoImage = effect.pokemonDetails.evolutionChain?.imageUrl,
+            evolution = effect.pokemonDetails.evolution,
         )
     }
 }

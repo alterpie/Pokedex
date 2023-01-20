@@ -12,12 +12,12 @@ internal data class PokemonSpeciesDetailsDto(
     @SerialName("flavor_text_entries")
     val flavorTextEntries: List<FlavorTextEntry>,
     @SerialName("evolution_chain")
-    val evolutionChain: String,
+    val evolutionChain: EvolutionChain,
     @SerialName("capture_rate")
     val captureRate: Int,
 ) {
     @Serializable
-    internal data class FlavorTextEntry(
+    data class FlavorTextEntry(
         @SerialName("flavor_text")
         val text: String,
         @SerialName("language")
@@ -29,4 +29,9 @@ internal data class PokemonSpeciesDetailsDto(
             val name: String
         )
     }
+
+    @Serializable
+    data class EvolutionChain(
+        @SerialName("url") val url: String,
+    )
 }
