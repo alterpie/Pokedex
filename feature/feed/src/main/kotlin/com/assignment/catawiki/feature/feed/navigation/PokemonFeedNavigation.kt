@@ -12,6 +12,8 @@ import androidx.navigation.compose.composable
 import com.assignment.catawiki.feature.feed.PokemonFeedViewModel
 import com.assignment.catawiki.feature.feed.PokemonFeedViewModelFactory
 import com.assignment.catawiki.feature.feed.di.PokemonFeedComponentInjector
+import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract
+import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.Event
 import com.assignment.catawiki.feature.feed.ui.PokemonFeedScreen
 
 const val PokemonFeedScreenRoute = "feed"
@@ -25,7 +27,10 @@ fun NavGraphBuilder.pokemonFeedScreen(onPokemonClick: (Long) -> Unit) {
 
         PokemonFeedScreen(
             state = state,
-            onPokemonClick = onPokemonClick
+            onPokemonClick = onPokemonClick,
+            onShouldLoadNextPage = {
+                viewModel.onEvent(Event.GetPokemonFeedNextPage)
+            }
         )
     }
 }

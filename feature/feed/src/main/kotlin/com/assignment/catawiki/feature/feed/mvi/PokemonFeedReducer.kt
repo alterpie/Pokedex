@@ -10,5 +10,6 @@ class PokemonFeedReducer @Inject constructor() : Reducer<Effect, State> {
 
     override fun invoke(currentState: State, effect: Effect): State = when (effect) {
         is Effect.DisplayPokemonFeed -> currentState.copy(items = effect.feed.toImmutableList())
+        Effect.DisplayLoadingFailure -> TODO()
     }
 }

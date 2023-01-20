@@ -13,6 +13,8 @@ import com.assignment.catawiki.pokemon.species.impl.mapper.PokemonSpeciesFeedIte
 import com.assignment.catawiki.pokemon.species.impl.remote.PokemonSpeciesRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -24,7 +26,7 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
     private val evolutionChainDtoMapper: EvolutionChainDtoMapper,
 ) : PokemonSpeciesRepository {
 
-    private val inMemoryPokemonFeed = MutableSharedFlow<List<PokemonSpeciesFeedItem>>()
+    private val inMemoryPokemonFeed = MutableStateFlow<List<PokemonSpeciesFeedItem>>(emptyList())
 
     override fun getPokemonFeed(): Flow<List<PokemonSpeciesFeedItem>> {
         return inMemoryPokemonFeed
@@ -68,7 +70,8 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
                 PaginationData(paginationDto.count, paginationDto.next)
             )
             val feedItems = paginationDto.results.map(pokemonSpeciesFeedItemDtoMapper::map)
-            inMemoryPokemonFeed.emit(feedItems)
+            val current = inMemoryPokemonFeed.value
+            inMemoryPokemonFeed.emit(current + feedItems)
         }
     }
 }

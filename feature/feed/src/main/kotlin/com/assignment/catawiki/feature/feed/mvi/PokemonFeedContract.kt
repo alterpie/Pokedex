@@ -15,10 +15,19 @@ interface PokemonFeedContract {
     }
 
     sealed interface Effect : UiEffect {
+        object DisplayLoadingFailure : Effect
         data class DisplayPokemonFeed(val feed: List<PokemonSpeciesFeedItem>) : Effect
     }
 
     data class State(
         val items: ImmutableList<PokemonSpeciesFeedItem> = persistentListOf(),
-    ) : UiState
+        val loadingError: LoadingError? = null,
+    ) : UiState {
+
+        sealed interface LoadingError {
+            object PaginationLoadingFailed : LoadingError
+        }
+    }
+
+
 }

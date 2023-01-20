@@ -18,7 +18,7 @@ class PokemonFeedActor @Inject constructor(
             .map(Effect::DisplayPokemonFeed)
         Event.GetPokemonFeedNextPage -> flow {
             pokemonSpeciesRepository.getNextPokemonPage()
-                .onFailure { /*TODO display error*/ }
+                .onFailure { Effect.DisplayLoadingFailure }
         }
     }
 }
