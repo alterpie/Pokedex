@@ -64,9 +64,9 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
         }
         return runCatchingFromSuspend {
             val paginationDto = remoteDataSource.fetchPokemonPage(urlPath)
-//            feedPaginationDataSource.savePaginationData(
-//                PaginationData(paginationDto.count, paginationDto.next)
-//            )
+            feedPaginationDataSource.savePaginationData(
+                PaginationData(paginationDto.count, paginationDto.next)
+            )
             val feedItems = paginationDto.results.map(pokemonSpeciesFeedItemDtoMapper::map)
             inMemoryPokemonFeed.emit(feedItems)
         }

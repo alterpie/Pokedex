@@ -1,4 +1,4 @@
-package com.assignment.catawiki.pokemon.species
+package com.assignment.catawiki.pokemon.species.impl
 
 import com.assignment.catawiki.pokemon.species.BuildConfig
 import com.assignment.catawiki.pokemon.species.impl.PokemonSpeciesRepositoryImpl
@@ -21,8 +21,13 @@ internal class PokemonSpeciesRepositoryImplTest {
         }
         val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource>()
 
-        val repository =
-            PokemonSpeciesRepositoryImpl(remoteDataSource, paginationDataDataSource, mockk())
+        val repository = PokemonSpeciesRepositoryImpl(
+            remoteDataSource,
+            paginationDataDataSource,
+            mockk(),
+            mockk(),
+            mockk()
+        )
 
         repository.getNextPokemonPage()
 
@@ -39,8 +44,13 @@ internal class PokemonSpeciesRepositoryImplTest {
             }
             val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource>()
 
-            val repository =
-                PokemonSpeciesRepositoryImpl(remoteDataSource, paginationDataDataSource, mockk())
+            val repository = PokemonSpeciesRepositoryImpl(
+                remoteDataSource,
+                paginationDataDataSource,
+                mockk(),
+                mockk(),
+                mockk()
+            )
 
             repository.getNextPokemonPage()
 
@@ -62,8 +72,13 @@ internal class PokemonSpeciesRepositoryImplTest {
             )
         }
 
-        val repository =
-            PokemonSpeciesRepositoryImpl(remoteDataSource, paginationDataDataSource, mockk())
+        val repository = PokemonSpeciesRepositoryImpl(
+            remoteDataSource,
+            paginationDataDataSource,
+            mockk(),
+            mockk(),
+            mockk()
+        )
 
         repository.getNextPokemonPage()
 
