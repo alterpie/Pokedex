@@ -1,17 +1,18 @@
 package com.assignment.catawiki.feature.feed
 
-import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import com.assignment.catawiki.di.viewModel.GenericViewModelFactory
+import com.assignment.catawiki.feature.feed.mvi.PokemonFeedFeature
 import com.assignment.catawiki.pokemon.species.di.PokemonSpeciesCoreComponentInjector
+import javax.inject.Inject
 
-internal class PokemonFeedViewModelFactory(
-    private val context: Context,
+class PokemonFeedViewModelFactory @Inject constructor(
+    private val feature: PokemonFeedFeature,
 ) : GenericViewModelFactory<PokemonFeedViewModel>() {
     override fun createViewModel(handle: SavedStateHandle): PokemonFeedViewModel {
         return PokemonFeedViewModel(
             handle,
-            PokemonSpeciesCoreComponentInjector.get(context.applicationContext).pokemonSpeciesRepository,
+            feature,
         )
     }
 }

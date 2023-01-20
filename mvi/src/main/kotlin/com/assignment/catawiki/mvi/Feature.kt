@@ -19,7 +19,7 @@ abstract class Feature<Event : UiEvent, Effect : UiEffect, State : UiState>(
     val initialState: State,
     private val actor: Actor<Event, Effect>,
     private val reducer: Reducer<Effect, State>,
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     private val stateFlow = MutableStateFlow(initialState)
     private val eventFlow = MutableSharedFlow<Event>()
@@ -29,7 +29,7 @@ abstract class Feature<Event : UiEvent, Effect : UiEffect, State : UiState>(
             .produceIn(coroutineScope)
             .consumeAsFlow()
             .flatMapMerge(DEFAULT_CONCURRENCY, actor::invoke)
-            .flowOn(coroutineDispatcher)
+            .flowOn(ioDispatcher)
             .scan(initialState) { state, effect -> reducer.invoke(state, effect) }
             .onEach { state -> stateFlow.update { state } }
     }

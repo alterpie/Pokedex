@@ -1,35 +1,19 @@
 package com.assignment.catawiki.feature.feed
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.assignment.catawiki.feature.feed.PokemonFeedContract.State
-import com.assignment.catawiki.pokemon.species.api.PokemonSpeciesRepository
-import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.Effect
+import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.Event
+import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.State
+import com.assignment.catawiki.feature.feed.mvi.PokemonFeedFeature
+import com.assignment.catawiki.mvi.viewModel.BaseViewModel
 
-internal class PokemonFeedViewModel(
+class PokemonFeedViewModel(
     savedStateHandle: SavedStateHandle,
-    private val pokemonSpeciesRepository: PokemonSpeciesRepository,
-) : ViewModel() {
-
-    private val _state = MutableStateFlow(State())
-    val state: StateFlow<State> = _state
+    pokemonFeedFeature: PokemonFeedFeature,
+) : BaseViewModel<Event, Effect, State>(pokemonFeedFeature) {
 
     init {
-        pokemonSpeciesRepository.getPokemonFeed()
-            .onEach { feed ->
-                _state.update { it.copy(items = feed.toImmutableList()) }
-            }
-            .launchIn(viewModelScope)
-
-        viewModelScope.launch {
-            pokemonSpeciesRepository.getNextPokemonPage()
-        }
+        onEvent(Event.GetPokemonFeed)
+        onEvent(Event.GetPokemonFeedNextPage)
     }
 }
