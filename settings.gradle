@@ -19,6 +19,7 @@ rootProject.name = "Catawiki"
 include (
     ':app',
     ':design',
+    ':mvi',
     ':feature:feed',
     ':feature:details',
     ':core:pokemon-species',
