@@ -17,7 +17,7 @@ class SpeciesEvolutionTypeConverter {
     }
 
     @TypeConverter
-    fun fromStringMap(evolution: SpeciesEntity.Evolution): String {
+    fun fromEvolution(evolution: SpeciesEntity.Evolution): String {
         return when (evolution) {
             SpeciesEntity.Evolution.Final -> "final"
             is SpeciesEntity.Evolution.EvolvesTo -> "${evolution.name} ${evolution.imageUrl}"

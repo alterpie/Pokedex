@@ -1,4 +1,4 @@
-package com.assignment.catawiki.pokemon.species.impl.mapper
+package com.assignment.catawiki.pokemon.species.data.species.mapper
 
 import android.net.Uri
 import com.assignment.catawiki.pokemon.species.BuildConfig

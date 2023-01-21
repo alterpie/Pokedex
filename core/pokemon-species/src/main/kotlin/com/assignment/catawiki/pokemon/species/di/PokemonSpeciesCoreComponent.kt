@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.assignment.catawiki.pokemon.species.data.pagination.PokemonSpeciesFeedPaginationDataSource
-import com.assignment.catawiki.pokemon.species.data.pagination.model.PokemonSpeciesFeedPaginationDataSourceImpl
+import com.assignment.catawiki.pokemon.species.data.pagination.PokemonSpeciesFeedPaginationDataSourceImpl
 import com.assignment.catawiki.pokemon.species.data.species.PokemonSpeciesRepositoryImpl
 import com.assignment.catawiki.pokemon.species.data.species.local.PokemonSpeciesLocalDataSource
 import com.assignment.catawiki.pokemon.species.data.species.local.PokemonSpeciesLocalDataSourceImpl
