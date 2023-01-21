@@ -26,6 +26,10 @@ internal class PokemonSpeciesFeedPaginationDataSourceImpl @Inject constructor(
             .firstOrNull()
     }
 
+    override suspend fun clearPaginationData() {
+        dataStore.edit { it.clear() }
+    }
+
     override suspend fun savePaginationData(paginationData: PaginationData) {
         dataStore.edit { preferences ->
             preferences[KEY_COUNT] = paginationData.count

@@ -9,7 +9,25 @@ import javax.inject.Inject
 class PokemonFeedReducer @Inject constructor() : Reducer<Effect, State> {
 
     override fun invoke(currentState: State, effect: Effect): State = when (effect) {
-        is Effect.DisplayPokemonFeed -> currentState.copy(items = effect.feed.toImmutableList())
-        Effect.DisplayLoadingFailure -> TODO()
+        is Effect.DisplayPokemonFeed -> currentState.copy(
+            items = effect.feed.toImmutableList(),
+            loadingState = null
+        )
+        Effect.DisplayPaginationFailure -> currentState.copy(
+            loadingError = State.LoadingError.PaginationLoadingFailed,
+            loadingState = null,
+        )
+        Effect.DisplayLoadingFailure -> currentState.copy(
+            loadingError = State.LoadingError.InitialLoadingFailed,
+            loadingState = null,
+        )
+        Effect.DisplayPaginationLoading -> currentState.copy(
+            loadingState = State.LoadingState.Pagination,
+            loadingError = null,
+        )
+        Effect.DisplayRefresh -> currentState.copy(
+            loadingState = State.LoadingState.Refresh,
+            loadingError = null,
+        )
     }
 }

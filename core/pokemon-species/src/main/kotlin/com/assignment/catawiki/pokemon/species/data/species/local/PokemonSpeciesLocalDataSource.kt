@@ -12,4 +12,8 @@ interface PokemonSpeciesLocalDataSource {
     suspend fun save(species: List<SpeciesEntity>)
     suspend fun updateDetails(updateSpeciesDetails: UpdateSpeciesDetails)
     suspend fun updateEvolution(updateSpeciesEvolution: UpdateSpeciesEvolution)
+
+    suspend fun removeAll()
+
+    suspend fun getCount(): Long
 }

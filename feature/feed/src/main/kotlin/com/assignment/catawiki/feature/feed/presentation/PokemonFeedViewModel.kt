@@ -13,7 +13,7 @@ class PokemonFeedViewModel(
 ) : BaseViewModel<Event, Effect, State>(pokemonFeedFeature) {
 
     init {
-        onEvent(Event.GetPokemonFeed)
-        onEvent(Event.GetPokemonFeedNextPage)
+        onEvent(Event.GetFeed)
+        onEvent(Event.GetInitialPage)
     }
 }

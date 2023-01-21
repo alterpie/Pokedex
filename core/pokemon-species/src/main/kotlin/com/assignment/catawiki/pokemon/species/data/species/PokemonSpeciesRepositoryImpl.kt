@@ -15,6 +15,7 @@ import com.assignment.catawiki.pokemon.species.data.species.remote.PokemonSpecie
 import com.assignment.catawiki.pokemon.species.domain.PokemonSpeciesRepository
 import com.assignment.catawiki.pokemon.species.domain.error.GetSpeciesDetailsError
 import com.assignment.catawiki.pokemon.species.domain.error.GetSpeciesEvolutionError
+import com.assignment.catawiki.pokemon.species.domain.error.GetSpeciesPageError
 import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -87,8 +88,10 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun getNextPokemonPage(): Result<Unit> {
-        Result.success(Unit)
+    override suspend fun getNextSpeciesPage(refresh: Boolean): Result<Unit> {
+        if (refresh) {
+            feedPaginationDataSource.clearPaginationData()
+        }
         val paginationData = feedPaginationDataSource.getPaginationData()
         val urlPath = if (paginationData?.next != null) {
             paginationData.next
@@ -102,7 +105,16 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
             )
             val speciesEntities = paginationDto.results.map(pokemonSpeciesDtoMapper::map)
 
+            if (refresh) {
+                localDataSource.removeAll()
+            }
             localDataSource.save(speciesEntities)
+        }.onFailure {
+            return Result.failure(GetSpeciesPageError())
         }
+    }
+
+    override suspend fun getStoredItemsCount(): Long {
+        return localDataSource.getCount()
     }
 }

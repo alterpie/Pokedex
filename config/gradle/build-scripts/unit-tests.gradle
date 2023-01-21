@@ -14,5 +14,5 @@ android {
 dependencies {
     testRuntimeOnly(libs.junit.engine)
 
-    implementation(libs.bundles.unitTestBundle)
+    testImplementation(libs.bundles.unitTestBundle)
 }

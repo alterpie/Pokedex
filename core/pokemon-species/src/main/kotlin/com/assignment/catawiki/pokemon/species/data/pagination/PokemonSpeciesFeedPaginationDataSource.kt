@@ -5,5 +5,6 @@ import com.assignment.catawiki.pokemon.species.data.pagination.model.PaginationD
 internal interface PokemonSpeciesFeedPaginationDataSource {
 
     suspend fun getPaginationData(): PaginationData?
+    suspend fun clearPaginationData()
     suspend fun savePaginationData(paginationData: PaginationData)
 }

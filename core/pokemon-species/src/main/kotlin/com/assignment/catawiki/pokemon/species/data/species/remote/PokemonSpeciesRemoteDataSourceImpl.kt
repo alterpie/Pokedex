@@ -6,6 +6,7 @@ import com.assignment.catawiki.pokemon.species.data.species.remote.model.Pokemon
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 internal class PokemonSpeciesRemoteDataSourceImpl @Inject constructor(
@@ -13,6 +14,7 @@ internal class PokemonSpeciesRemoteDataSourceImpl @Inject constructor(
 ) : PokemonSpeciesRemoteDataSource {
 
     override suspend fun fetchPokemonPage(path: String): PokemonSpeciesFeedPaginationDto {
+       delay(5000)
         return httpClient.get(path).body()
     }
 

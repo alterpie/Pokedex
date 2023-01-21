@@ -48,7 +48,7 @@ internal class PokemonSpeciesRepositoryImplTest {
                 mockk(),
             )
 
-            repository.getNextPokemonPage()
+            repository.getNextSpeciesPage()
 
             coVerify {
                 remoteDataSource.fetchPokemonPage("next_url")
@@ -74,7 +74,7 @@ internal class PokemonSpeciesRepositoryImplTest {
                     mockk(),
                 )
 
-                repository.getNextPokemonPage()
+                repository.getNextSpeciesPage()
 
                 coVerify {
                     remoteDataSource.fetchPokemonPage(BuildConfig.INITIAL_FEED_URL_PATH)
@@ -105,7 +105,7 @@ internal class PokemonSpeciesRepositoryImplTest {
                 mockk(),
             )
 
-            repository.getNextPokemonPage()
+            repository.getNextSpeciesPage()
 
             coVerify {
                 paginationDataDataSource.savePaginationData(PaginationData(42L, "next_url"))

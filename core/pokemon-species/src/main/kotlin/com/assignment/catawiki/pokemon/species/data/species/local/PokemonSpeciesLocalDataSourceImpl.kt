@@ -29,4 +29,12 @@ internal class PokemonSpeciesLocalDataSourceImpl @Inject constructor(
     override suspend fun updateEvolution(updateSpeciesEvolution: UpdateSpeciesEvolution) {
         speciesDao.updateEvolution(updateSpeciesEvolution)
     }
+
+    override suspend fun removeAll() {
+       speciesDao.deleteAll()
+    }
+
+    override suspend fun getCount(): Long {
+        return speciesDao.count()
+    }
 }

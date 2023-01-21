@@ -9,5 +9,7 @@ interface PokemonSpeciesRepository {
     fun getPokemonSpecies(id: Long): Flow<PokemonSpecies>
     suspend fun getSpeciesDetails(id: Long): Result<Unit>
     suspend fun getSpeciesEvolution(id: Long): Result<Unit>
-    suspend fun getNextPokemonPage(): Result<Unit>
+    suspend fun getNextSpeciesPage(refresh: Boolean): Result<Unit>
+
+    suspend fun getStoredItemsCount(): Long
 }

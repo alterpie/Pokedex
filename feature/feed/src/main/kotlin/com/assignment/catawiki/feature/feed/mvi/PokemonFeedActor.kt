@@ -1,11 +1,12 @@
 package com.assignment.catawiki.feature.feed.mvi
 
-import com.assignment.catawiki.feature.feed.presentation.usecase.GetPokemonFeedUseCase
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.Effect
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.Event
+import com.assignment.catawiki.feature.feed.presentation.usecase.GetPokemonFeedUseCase
 import com.assignment.catawiki.mvi.Actor
 import com.assignment.catawiki.pokemon.species.domain.PokemonSpeciesRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -16,11 +17,27 @@ class PokemonFeedActor @Inject constructor(
 ) : Actor<Event, Effect> {
 
     override fun invoke(event: Event): Flow<Effect> = when (event) {
-        Event.GetPokemonFeed -> getPokemonFeedUseCase.execute()
+        Event.GetFeed -> getPokemonFeedUseCase.execute()
             .map(Effect::DisplayPokemonFeed)
-        Event.GetPokemonFeedNextPage -> flow {
-            pokemonSpeciesRepository.getNextPokemonPage()
-                .onFailure { Effect.DisplayLoadingFailure }
+        Event.GetFeedNextPage -> flow {
+            emit(Effect.DisplayPaginationLoading)
+            pokemonSpeciesRepository.getNextSpeciesPage(false)
+                .onFailure { emit(Effect.DisplayPaginationFailure) }
         }
+        Event.RefreshPage -> refreshPage()
+        Event.GetInitialPage -> flow {
+            if (pokemonSpeciesRepository.getStoredItemsCount() == 0L) {
+                emit(Effect.DisplayRefresh)
+                pokemonSpeciesRepository.getNextSpeciesPage(false)
+                    .onFailure { emit(Effect.DisplayLoadingFailure) }
+            }
+        }
+        Event.RetryLoadFeed -> refreshPage()
+    }
+
+    private fun refreshPage(): Flow<Effect> = flow {
+        emit(Effect.DisplayRefresh)
+        pokemonSpeciesRepository.getNextSpeciesPage(true)
+            .onFailure { emit(Effect.DisplayLoadingFailure) }
     }
 }

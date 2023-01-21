@@ -26,4 +26,10 @@ interface SpeciesDao {
 
     @Update(entity = SpeciesEntity::class)
     suspend fun updateEvolution(updateSpeciesEvolution: UpdateSpeciesEvolution)
+
+    @Query("DELETE FROM species")
+    suspend fun deleteAll()
+
+    @Query("SELECT COUNT(id) from species")
+    suspend fun count(): Long
 }
