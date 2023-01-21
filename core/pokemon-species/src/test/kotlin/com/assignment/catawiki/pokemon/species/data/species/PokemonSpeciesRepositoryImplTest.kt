@@ -10,6 +10,7 @@ import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSp
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesEvolution
 import com.assignment.catawiki.pokemon.species.data.species.mapper.EvolutionChainDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDetailsDtoMapper
+import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.mapper.SpeciesEntityMapper
 import com.assignment.catawiki.pokemon.species.data.species.remote.PokemonSpeciesRemoteDataSource
 import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesFeedPaginationDto
@@ -48,7 +49,7 @@ internal class PokemonSpeciesRepositoryImplTest {
                 mockk(),
             )
 
-            repository.getNextSpeciesPage()
+            repository.getNextSpeciesPage(false)
 
             coVerify {
                 remoteDataSource.fetchPokemonPage("next_url")
@@ -74,7 +75,7 @@ internal class PokemonSpeciesRepositoryImplTest {
                     mockk(),
                 )
 
-                repository.getNextSpeciesPage()
+                repository.getNextSpeciesPage(false)
 
                 coVerify {
                     remoteDataSource.fetchPokemonPage(BuildConfig.INITIAL_FEED_URL_PATH)
@@ -105,10 +106,45 @@ internal class PokemonSpeciesRepositoryImplTest {
                 mockk(),
             )
 
-            repository.getNextSpeciesPage()
+            repository.getNextSpeciesPage(false)
 
             coVerify {
                 paginationDataDataSource.savePaginationData(PaginationData(42L, "next_url"))
+            }
+        }
+
+        @Test
+        fun `should clear pagination data and local storage when refresh flag is true`() = runTest {
+            val paginationDataDataSource = mockk<PokemonSpeciesFeedPaginationDataSource> {
+                coEvery { getPaginationData() } returns null
+            }
+            val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
+                coEvery { fetchPokemonPage(any()) } returns PokemonSpeciesFeedPaginationDto(
+                    42L,
+                    "next_url",
+                    emptyList(),
+                )
+            }
+            val localDataSource = mockk<PokemonSpeciesLocalDataSource>()
+            val pokemonSpeciesDtoMapper = mockk<PokemonSpeciesDtoMapper> {
+                every { map(any()) } returns mockk()
+            }
+
+            val repository = PokemonSpeciesRepositoryImpl(
+                remoteDataSource,
+                localDataSource,
+                paginationDataDataSource,
+                pokemonSpeciesDtoMapper,
+                mockk(),
+                mockk(),
+                mockk(),
+            )
+
+            repository.getNextSpeciesPage(true)
+
+            coVerify {
+                paginationDataDataSource.clearPaginationData()
+                localDataSource.removeAll()
             }
         }
     }
