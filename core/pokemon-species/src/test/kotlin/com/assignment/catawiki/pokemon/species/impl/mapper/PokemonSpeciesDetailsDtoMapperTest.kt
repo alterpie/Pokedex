@@ -1,9 +1,9 @@
 package com.assignment.catawiki.pokemon.species.impl.mapper
 
 import com.assignment.catawiki.pokemon.species.BuildConfig
+import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
 import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDetailsDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesDetailsDto
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
@@ -32,13 +32,14 @@ internal class PokemonSpeciesDetailsDtoMapperTest {
 
         val mapped = mapper.map(dto)
 
-        mapped shouldBe PokemonSpecies(
+        mapped shouldBe SpeciesEntity(
             42L,
             "name",
             "${BuildConfig.POKEMON_IMAGE_URL}42.png",
             "good morning",
             42,
-            null
+            "url",
+            null,
         )
     }
 }

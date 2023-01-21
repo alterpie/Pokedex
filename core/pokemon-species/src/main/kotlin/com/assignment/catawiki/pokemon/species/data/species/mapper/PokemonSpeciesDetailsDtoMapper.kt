@@ -1,20 +1,20 @@
 package com.assignment.catawiki.pokemon.species.data.species.mapper
 
-import com.assignment.catawiki.pokemon.species.BuildConfig
+import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesDetails
 import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesDetailsDto
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
+import java.util.*
 import javax.inject.Inject
 
 internal class PokemonSpeciesDetailsDtoMapper @Inject constructor() {
 
-    fun map(from: PokemonSpeciesDetailsDto): PokemonSpecies = with(from) {
-        PokemonSpecies(
+    fun map(from: PokemonSpeciesDetailsDto): UpdateSpeciesDetails = with(from) {
+        UpdateSpeciesDetails(
             id,
-            name,
-            "${BuildConfig.POKEMON_IMAGE_URL}$id.png",
-            flavorTextEntries.find { it.language.name.equals("en", ignoreCase = true) }?.text ?: "",
+            flavorTextEntries.find { textEntry ->
+                textEntry.language.name.equals(Locale.ENGLISH.language, ignoreCase = true)
+            }?.text ?: "",
             captureRate,
-            null,
+            evolutionChain.url,
         )
     }
 }

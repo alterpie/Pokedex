@@ -17,8 +17,17 @@ data class SpeciesEntity(
     val description: String?,
     @ColumnInfo(name = "capture_rate")
     val captureRate: Int?,
-    @ColumnInfo(name = "evolution_species_name")
-    val evolutionSpeciesName: String?,
-    @ColumnInfo(name = "evolution_species_image_url")
-    val evolutionSpeciesImageUrl: String?,
-)
+    @ColumnInfo(name = "evolution_chain_url")
+    val evolutionChainUrl: String?,
+    @ColumnInfo(name = "evolution")
+    val evolution: Evolution?,
+) {
+    sealed interface Evolution {
+        data class EvolvesTo(
+            val name: String,
+            val imageUrl: String,
+        ) : Evolution
+
+        object Final : Evolution
+    }
+}

@@ -9,7 +9,7 @@ data class PokemonSpecies(
     val evolution: Evolution?,
 ) {
     sealed interface Evolution {
-        data class Next(
+        data class EvolvesTo(
             val name: String,
             val imageUrl: String,
         ) : Evolution

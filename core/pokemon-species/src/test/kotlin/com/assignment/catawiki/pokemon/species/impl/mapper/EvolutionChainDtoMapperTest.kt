@@ -2,9 +2,9 @@ package com.assignment.catawiki.pokemon.species.impl.mapper
 
 import android.net.Uri
 import com.assignment.catawiki.pokemon.species.BuildConfig
+import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
 import com.assignment.catawiki.pokemon.species.data.species.mapper.EvolutionChainDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.remote.model.EvolutionChainDto
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -36,7 +36,7 @@ internal class EvolutionChainDtoMapperTest {
 
         val mapped = mapper.map(dto, "charmander")
 
-        mapped shouldBe PokemonSpecies.Evolution.Next(
+        mapped shouldBe SpeciesEntity.Evolution.EvolvesTo(
             "charmeleon",
             "${BuildConfig.POKEMON_IMAGE_URL}1.png"
         )
@@ -54,7 +54,7 @@ internal class EvolutionChainDtoMapperTest {
 
         val mapped = mapper.map(dto, "final form pokemon")
 
-        mapped shouldBe PokemonSpecies.Evolution.Final
+        mapped shouldBe SpeciesEntity.Evolution.Final
     }
 
     @Test
@@ -67,7 +67,7 @@ internal class EvolutionChainDtoMapperTest {
 
         val mapped = mapper.map(dto, "charmeleon")
 
-        mapped shouldBe PokemonSpecies.Evolution.Next(
+        mapped shouldBe SpeciesEntity.Evolution.EvolvesTo(
             "charizard",
             "${BuildConfig.POKEMON_IMAGE_URL}2.png"
         )
@@ -80,7 +80,7 @@ internal class EvolutionChainDtoMapperTest {
 
         val mapped = mapper.map(dto, "charizard")
 
-        mapped shouldBe PokemonSpecies.Evolution.Final
+        mapped shouldBe SpeciesEntity.Evolution.Final
     }
 
     private fun buildDto() = EvolutionChainDto(

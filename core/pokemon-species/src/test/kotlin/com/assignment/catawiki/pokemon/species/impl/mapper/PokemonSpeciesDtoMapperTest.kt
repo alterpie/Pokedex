@@ -2,8 +2,9 @@ package com.assignment.catawiki.pokemon.species.impl.mapper
 
 import android.net.Uri
 import com.assignment.catawiki.pokemon.species.BuildConfig
-import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesFeedItemDtoMapper
-import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesFeedItemDto
+import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
+import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDtoMapper
+import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesDto
 import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -12,7 +13,7 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import org.junit.jupiter.api.Test
 
-internal class PokemonSpeciesFeedItemDtoMapperTest {
+internal class PokemonSpeciesDtoMapperTest {
 
     @Test
     fun `should map pokemon feed item`() {
@@ -20,15 +21,16 @@ internal class PokemonSpeciesFeedItemDtoMapperTest {
         every { Uri.parse(any()) } returns mockk {
             every { pathSegments } returns listOf("api", "42")
         }
-        val dto = PokemonSpeciesFeedItemDto("name", "https://host.com/api/42/")
-        val mapper = PokemonSpeciesFeedItemDtoMapper()
+        val dto = PokemonSpeciesDto("name", "https://host.com/api/42/")
+        val mapper = PokemonSpeciesDtoMapper()
 
         val mapped = mapper.map(dto)
 
-        mapped shouldBe PokemonSpecies(
+        mapped shouldBe SpeciesEntity(
             42L,
             "name",
             "${BuildConfig.POKEMON_IMAGE_URL}42.png",
+            null,
             null,
             null,
             null,

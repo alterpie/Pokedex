@@ -8,6 +8,7 @@ import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 interface PokemonDetailsContract {
 
     sealed interface Event : UiEvent {
+        data class GetPokemonSpecies(val id: Long) : Event
         data class GetPokemonDetails(val id: Long) : Event
     }
 

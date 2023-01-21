@@ -14,6 +14,8 @@ class PokemonDetailsViewModel(
 ) : BaseViewModel<Event, Effect, State>(feature) {
 
     init {
-        onEvent(Event.GetPokemonDetails(requireNotNull(savedStateHandle[POKEMON_ID_NAV_PARAM])))
+        val speciesId = requireNotNull(savedStateHandle.get<Long>(POKEMON_ID_NAV_PARAM))
+        onEvent(Event.GetPokemonSpecies(speciesId))
+        onEvent(Event.GetPokemonDetails(speciesId))
     }
 }

@@ -36,7 +36,7 @@ internal fun PokemonDetailsScreen(state: State) {
             PokemonSpecies.Evolution.Final -> {
                 BasicText(text = stringResource(com.assignment.catawiki.design.R.string.final_evolution_chain))
             }
-            is PokemonSpecies.Evolution.Next -> {
+            is PokemonSpecies.Evolution.EvolvesTo -> {
                 BasicText(text = state.evolution.name)
                 Image(
                     modifier = Modifier.size(80.dp),

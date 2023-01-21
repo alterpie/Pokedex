@@ -4,57 +4,91 @@ import com.assignment.catawiki.common.runCatchingFromSuspend
 import com.assignment.catawiki.pokemon.species.BuildConfig
 import com.assignment.catawiki.pokemon.species.data.pagination.PokemonSpeciesFeedPaginationDataSource
 import com.assignment.catawiki.pokemon.species.data.pagination.model.PaginationData
+import com.assignment.catawiki.pokemon.species.data.species.local.PokemonSpeciesLocalDataSource
+import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
+import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesEvolution
 import com.assignment.catawiki.pokemon.species.data.species.mapper.EvolutionChainDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDetailsDtoMapper
-import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesFeedItemDtoMapper
+import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDtoMapper
+import com.assignment.catawiki.pokemon.species.data.species.mapper.SpeciesEntityMapper
 import com.assignment.catawiki.pokemon.species.data.species.remote.PokemonSpeciesRemoteDataSource
 import com.assignment.catawiki.pokemon.species.domain.PokemonSpeciesRepository
+import com.assignment.catawiki.pokemon.species.domain.error.GetSpeciesDetailsError
+import com.assignment.catawiki.pokemon.species.domain.error.GetSpeciesEvolutionError
 import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 internal class PokemonSpeciesRepositoryImpl @Inject constructor(
     private val remoteDataSource: PokemonSpeciesRemoteDataSource,
+    private val localDataSource: PokemonSpeciesLocalDataSource,
     private val feedPaginationDataSource: PokemonSpeciesFeedPaginationDataSource,
-    private val pokemonSpeciesFeedItemDtoMapper: PokemonSpeciesFeedItemDtoMapper,
+    private val pokemonSpeciesDtoMapper: PokemonSpeciesDtoMapper,
     private val pokemonSpeciesDetailsDtoMapper: PokemonSpeciesDetailsDtoMapper,
     private val evolutionChainDtoMapper: EvolutionChainDtoMapper,
+    private val speciesEntityMapper: SpeciesEntityMapper,
 ) : PokemonSpeciesRepository {
 
-    private val inMemoryPokemonFeed = MutableStateFlow<List<PokemonSpecies>>(emptyList())
-
     override fun getAllPokemonSpecies(): Flow<List<PokemonSpecies>> {
-        return inMemoryPokemonFeed
+        return localDataSource.getAllSpecies()
+            .map { species -> species.map(speciesEntityMapper::map) }
     }
 
-    override fun getPokemonSpecies(id: Long): Flow<Result<PokemonSpecies>> {
-        return flow {
-            val detailsResponse = runCatchingFromSuspend {
-                remoteDataSource.fetchPokemonDetails(id)
-            }
+    override fun getPokemonSpecies(id: Long): Flow<PokemonSpecies> {
+        return localDataSource.getSpecies(id)
+            .map(speciesEntityMapper::map)
+    }
 
-            val details = detailsResponse.map { pokemonSpeciesDetailsDtoMapper.map(it) }
-            emit(details)
+    override suspend fun getSpeciesDetails(id: Long): Result<Unit> {
+        val storedSpecies = localDataSource.getSpecies(id).first()
+        if (storedSpecies.description != null) return Result.success(Unit)
 
-            detailsResponse.getOrNull()?.let { detailsDto ->
-                runCatchingFromSuspend { remoteDataSource.fetchEvolutionChain(detailsDto.evolutionChain.url) }
-                    .map { evolutionChainDto ->
-                        val evolutionChain = evolutionChainDtoMapper.map(
-                            evolutionChainDto,
-                            detailsDto.name
-                        )
-                        val updatedDetails = details.map {
-                            it.copy(evolution = evolutionChain)
-                        }
-                        emit(updatedDetails)
-                    }
-            }
+        val detailsResult = runCatchingFromSuspend {
+            remoteDataSource.fetchPokemonDetails(id)
+        }.map { detailsDto ->
+            val updateSpeciesDetails = pokemonSpeciesDetailsDtoMapper.map(detailsDto)
+            localDataSource.updateDetails(updateSpeciesDetails)
+            updateSpeciesDetails
         }
+            .onFailure {
+                return Result.failure(GetSpeciesDetailsError())
+            }
+
+        if (detailsResult.isSuccess) {
+            val details = detailsResult.getOrThrow()
+            val evolutionChainUrl = requireNotNull(details.evolutionChainUrl)
+            fetchEvolutionChain(evolutionChainUrl, storedSpecies.name)
+                .onSuccess {
+                    localDataSource.updateEvolution(UpdateSpeciesEvolution(id, it))
+                }
+                .onFailure { return Result.failure(GetSpeciesEvolutionError()) }
+        }
+
+        return Result.success(Unit)
+    }
+
+    override suspend fun getSpeciesEvolution(id: Long): Result<Unit> {
+        val species = localDataSource.getSpecies(id).first()
+        return fetchEvolutionChain(requireNotNull(species.evolutionChainUrl), species.name)
+            .onSuccess { evolution ->
+                localDataSource.updateEvolution(UpdateSpeciesEvolution(id, evolution))
+            }.map { }
+    }
+
+    private suspend fun fetchEvolutionChain(
+        url: String,
+        forSpeciesName: String
+    ): Result<SpeciesEntity.Evolution> {
+        return runCatchingFromSuspend { remoteDataSource.fetchEvolutionChain(url) }
+            .map { evolutionChainDto ->
+                evolutionChainDtoMapper.map(evolutionChainDto, forSpeciesName)
+            }
     }
 
     override suspend fun getNextPokemonPage(): Result<Unit> {
+        Result.success(Unit)
         val paginationData = feedPaginationDataSource.getPaginationData()
         val urlPath = if (paginationData?.next != null) {
             paginationData.next
@@ -66,9 +100,9 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
             feedPaginationDataSource.savePaginationData(
                 PaginationData(paginationDto.count, paginationDto.next)
             )
-            val feedItems = paginationDto.results.map(pokemonSpeciesFeedItemDtoMapper::map)
-            val current = inMemoryPokemonFeed.value
-            inMemoryPokemonFeed.emit(current + feedItems)
+            val speciesEntities = paginationDto.results.map(pokemonSpeciesDtoMapper::map)
+
+            localDataSource.save(speciesEntities)
         }
     }
 }

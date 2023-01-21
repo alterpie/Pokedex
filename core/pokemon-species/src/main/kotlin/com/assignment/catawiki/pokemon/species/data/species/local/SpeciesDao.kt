@@ -6,17 +6,24 @@ import androidx.room.Update
 import androidx.room.Upsert
 import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesDetails
+import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesEvolution
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SpeciesDao {
 
     @Query("SELECT * FROM species")
-    fun getSpecies(): Flow<List<SpeciesEntity>>
+    fun getAllSpecies(): Flow<List<SpeciesEntity>>
+
+    @Query("SELECT * FROM species WHERE id =:id")
+    fun getSpecies(id: Long): Flow<SpeciesEntity>
 
     @Upsert
-    fun save(species: List<SpeciesEntity>)
+    suspend fun save(species: List<SpeciesEntity>)
 
     @Update(entity = SpeciesEntity::class)
-    fun updateDetails(updateSpeciesDetails: UpdateSpeciesDetails)
+    suspend fun updateDetails(updateSpeciesDetails: UpdateSpeciesDetails)
+
+    @Update(entity = SpeciesEntity::class)
+    suspend fun updateEvolution(updateSpeciesEvolution: UpdateSpeciesEvolution)
 }

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class PokemonSpeciesFeedItemDto(
+internal data class PokemonSpeciesDto(
     @SerialName("name")
     val name: String,
     @SerialName("url")

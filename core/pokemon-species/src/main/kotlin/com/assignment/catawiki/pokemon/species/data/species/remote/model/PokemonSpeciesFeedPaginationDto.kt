@@ -10,5 +10,5 @@ internal data class PokemonSpeciesFeedPaginationDto(
     @SerialName("next")
     val next: String?,
     @SerialName("results")
-    val results: List<PokemonSpeciesFeedItemDto>,
+    val results: List<PokemonSpeciesDto>,
 )

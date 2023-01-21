@@ -10,8 +10,6 @@ data class UpdateSpeciesDetails(
     val description: String?,
     @ColumnInfo(name = "capture_rate")
     val captureRate: Int?,
-    @ColumnInfo(name = "evolution_species_name")
-    val evolutionSpeciesName: String?,
-    @ColumnInfo(name = "evolution_species_image_url")
-    val evolutionSpeciesImageUrl: String?,
+    @ColumnInfo(name = "evolution_chain_url")
+    val evolutionChainUrl: String?,
 )
