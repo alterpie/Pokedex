@@ -15,6 +15,7 @@ interface PokemonFeedContract {
         object GetInitialPage : Event
         object RefreshFeed : Event
         object RetryLoadFeed : Event
+        object AcknowledgePopupErrorShown : Event
     }
 
     sealed interface Effect : UiEffect {
@@ -22,6 +23,8 @@ interface PokemonFeedContract {
         object DisplayRefresh : Effect
         object DisplayPaginationFailure : Effect
         object DisplayLoadingFailure : Effect
+        object AcknowledgePopupError : Effect
+
         data class DisplayPokemonFeed(val feed: List<PokemonSpeciesFeedItem>) : Effect
     }
 
@@ -37,8 +40,9 @@ interface PokemonFeedContract {
         }
 
         sealed interface LoadingError {
-            object LoadingFailed : LoadingError
-            object PaginationLoadingFailed : LoadingError
+            object InitialFailed : LoadingError
+            object RefreshFailed : LoadingError
+            object PaginationFailed : LoadingError
         }
     }
 

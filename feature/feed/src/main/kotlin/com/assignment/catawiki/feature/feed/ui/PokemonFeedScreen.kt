@@ -70,19 +70,24 @@ internal fun PokemonFeedScreen(
     onShouldLoadNextPage: () -> Unit,
     onRefreshScreen: () -> Unit,
     onRetryClick: () -> Unit,
+    onPopupErrorShown: () -> Unit,
 ) {
     val context = LocalContext.current
     LaunchedEffect(state.loadingError) {
-        if (state.loadingError is State.LoadingError.PaginationLoadingFailed) {
-            Toast.makeText(
-                context,
-                context.getString(DesignR.string.error_loading_feed_next_page_failed),
-                Toast.LENGTH_LONG
-            ).show()
+        val messageRes = when (state.loadingError) {
+            State.LoadingError.PaginationFailed -> DesignR.string.error_loading_feed_next_page_failed
+            State.LoadingError.RefreshFailed -> DesignR.string.error_refresh_feed_failed
+            State.LoadingError.InitialFailed -> null
+            null -> null
+        }
+        messageRes?.let {
+            Toast.makeText(context, context.getString(messageRes), Toast.LENGTH_LONG).show()
+            onPopupErrorShown()
         }
     }
+    val refreshing = state.loadingState is State.LoadingState.Refresh
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = state.loadingState is State.LoadingState.Refresh,
+        refreshing = refreshing,
         onRefresh = onRefreshScreen,
     )
     val rotation by animateFloatAsState(pullRefreshState.progress * 120)
@@ -130,14 +135,14 @@ internal fun PokemonFeedScreen(
             }
         }
 
-        if (state.loadingError is State.LoadingError.LoadingFailed) {
+        if (state.loadingError is State.LoadingError.InitialFailed) {
             InitialLoadingFailedSection(onRetryClick = onRetryClick)
         }
 
         PullRefreshLoadingIndicator(
             pullRefreshState = pullRefreshState,
             rotation = rotation,
-            isRefreshing = state.loadingState is State.LoadingState.Refresh,
+            isRefreshing = refreshing,
         )
         TopGradient()
         BottomGradient()

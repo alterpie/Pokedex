@@ -11,14 +11,18 @@ class PokemonFeedReducer @Inject constructor() : Reducer<Effect, State> {
     override fun invoke(currentState: State, effect: Effect): State = when (effect) {
         is Effect.DisplayPokemonFeed -> currentState.copy(
             items = effect.feed.toImmutableList(),
-            loadingState = if (effect.feed.isNotEmpty()) null else currentState.loadingState
+            loadingState = null
         )
         Effect.DisplayPaginationFailure -> currentState.copy(
-            loadingError = State.LoadingError.PaginationLoadingFailed,
+            loadingError = State.LoadingError.PaginationFailed,
             loadingState = null,
         )
         Effect.DisplayLoadingFailure -> currentState.copy(
-            loadingError = State.LoadingError.LoadingFailed,
+            loadingError = if (currentState.items.isEmpty()) {
+                State.LoadingError.InitialFailed
+            } else {
+                State.LoadingError.RefreshFailed
+            },
             loadingState = null,
         )
         Effect.DisplayPaginationLoading -> currentState.copy(
@@ -27,6 +31,9 @@ class PokemonFeedReducer @Inject constructor() : Reducer<Effect, State> {
         )
         Effect.DisplayRefresh -> currentState.copy(
             loadingState = State.LoadingState.Refresh,
+            loadingError = null,
+        )
+        Effect.AcknowledgePopupError -> currentState.copy(
             loadingError = null,
         )
     }

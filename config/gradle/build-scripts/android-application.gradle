@@ -28,7 +28,6 @@ android {
 
         release {
             def keystoreProperties = new Properties()
-//            TODO change to release key
             File keystoreFile = rootProject.file("config/keys/keystore/keystore.properties")
             if (keystoreFile.exists()) {
                 keystoreProperties.load(new FileInputStream(keystoreFile))

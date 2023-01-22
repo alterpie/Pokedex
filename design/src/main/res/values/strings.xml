@@ -8,4 +8,5 @@
     <string name="error_loading_details">Failed to load pokemon details</string>
     <string name="error_loading_feed_failed">Couldn\'t load pokemon list</string>
     <string name="error_loading_feed_next_page_failed">Couldn\'t load next pokemon page</string>
+    <string name="error_refresh_feed_failed">Couldn\'t refresh pokemon feed</string>
 </resources>

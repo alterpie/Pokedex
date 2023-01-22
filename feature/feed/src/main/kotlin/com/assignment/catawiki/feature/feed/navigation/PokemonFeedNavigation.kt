@@ -6,9 +6,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.assignment.catawiki.feature.feed.presentation.PokemonFeedViewModel
 import com.assignment.catawiki.feature.feed.di.PokemonFeedComponentInjector
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.Event
+import com.assignment.catawiki.feature.feed.presentation.PokemonFeedViewModel
 import com.assignment.catawiki.feature.feed.ui.PokemonFeedScreen
 
 const val PokemonFeedScreenRoute = "feed"
@@ -25,7 +25,8 @@ fun NavGraphBuilder.pokemonFeedScreen(onPokemonClick: (Long) -> Unit) {
             onPokemonClick = onPokemonClick,
             onShouldLoadNextPage = { viewModel.onEvent(Event.GetFeedNextPage) },
             onRefreshScreen = { viewModel.onEvent(Event.RefreshFeed) },
-            onRetryClick = { viewModel.onEvent(Event.RetryLoadFeed) }
+            onRetryClick = { viewModel.onEvent(Event.RetryLoadFeed) },
+            onPopupErrorShown = { viewModel.onEvent(Event.AcknowledgePopupErrorShown) }
         )
     }
 }

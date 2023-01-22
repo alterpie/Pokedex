@@ -8,6 +8,7 @@ import com.assignment.catawiki.pokemon.species.domain.PokemonSpeciesRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 class PokemonFeedActor @Inject constructor(
@@ -32,6 +33,7 @@ class PokemonFeedActor @Inject constructor(
             }
         }
         Event.RetryLoadFeed -> refreshPage()
+        Event.AcknowledgePopupErrorShown -> flowOf(Effect.AcknowledgePopupError)
     }
 
     private fun refreshPage(): Flow<Effect> = flow {

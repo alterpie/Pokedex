@@ -195,6 +195,17 @@ internal class PokemonFeedActorTest {
         }
     }
 
+    @Test
+    fun `should acknowledge popup error`() = runTest {
+        val actor = buildActor()
+
+        actor.invoke(Event.AcknowledgePopupErrorShown)
+            .test {
+                awaitItem() shouldBe Effect.AcknowledgePopupError
+                awaitComplete()
+            }
+    }
+
     private fun buildActor(
         getPokemonFeedUseCase: GetPokemonFeedUseCase = mockk(),
         pokemonSpeciesRepository: PokemonSpeciesRepository = mockk(),

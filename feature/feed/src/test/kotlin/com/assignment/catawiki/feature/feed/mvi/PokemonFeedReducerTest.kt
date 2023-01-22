@@ -4,6 +4,7 @@ import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.Effect
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.State
 import com.assignment.catawiki.feature.feed.presentation.model.PokemonSpeciesFeedItem
 import io.kotest.matchers.shouldBe
+import io.mockk.mockk
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import org.junit.jupiter.api.Test
@@ -30,7 +31,7 @@ internal class PokemonFeedReducerTest {
     @Test
     fun `should display pagination loading`() {
         val initialState =
-            State(loadingState = null, loadingError = State.LoadingError.PaginationLoadingFailed)
+            State(loadingState = null, loadingError = State.LoadingError.PaginationFailed)
         val reducer = PokemonFeedReducer()
 
         val newState = reducer.invoke(
@@ -57,14 +58,14 @@ internal class PokemonFeedReducerTest {
 
         newState shouldBe initialState.copy(
             loadingState = null,
-            loadingError = State.LoadingError.PaginationLoadingFailed,
+            loadingError = State.LoadingError.PaginationFailed,
         )
     }
 
     @Test
     fun `should display refresh loading`() {
         val initialState =
-            State(loadingState = null, loadingError = State.LoadingError.LoadingFailed)
+            State(loadingState = null, loadingError = State.LoadingError.InitialFailed)
         val reducer = PokemonFeedReducer()
 
         val newState = reducer.invoke(
@@ -79,9 +80,12 @@ internal class PokemonFeedReducerTest {
     }
 
     @Test
-    fun `should display refresh loading failure`() {
-        val initialState =
-            State(loadingState = State.LoadingState.Refresh, loadingError = null)
+    fun `should display loading failure as initial when items list is empty`() {
+        val initialState = State(
+            loadingState = State.LoadingState.Refresh,
+            loadingError = null,
+            items = persistentListOf()
+        )
         val reducer = PokemonFeedReducer()
 
         val newState = reducer.invoke(
@@ -91,7 +95,42 @@ internal class PokemonFeedReducerTest {
 
         newState shouldBe initialState.copy(
             loadingState = null,
-            loadingError = State.LoadingError.LoadingFailed
+            loadingError = State.LoadingError.InitialFailed
+        )
+    }
+
+    @Test
+    fun `should display loading failure as refresh when items list is not empty`() {
+        val initialState = State(
+            loadingState = State.LoadingState.Refresh,
+            loadingError = null,
+            items = persistentListOf(mockk(), mockk())
+        )
+        val reducer = PokemonFeedReducer()
+
+        val newState = reducer.invoke(
+            initialState,
+            Effect.DisplayLoadingFailure
+        )
+
+        newState shouldBe initialState.copy(
+            loadingState = null,
+            loadingError = State.LoadingError.RefreshFailed
+        )
+    }
+
+    @Test
+    fun `should acknowledge popup error`() {
+        val initialState = State(loadingError = State.LoadingError.RefreshFailed)
+        val reducer = PokemonFeedReducer()
+
+        val newState = reducer.invoke(
+            initialState,
+            Effect.AcknowledgePopupError
+        )
+
+        newState shouldBe initialState.copy(
+            loadingError = null
         )
     }
 
