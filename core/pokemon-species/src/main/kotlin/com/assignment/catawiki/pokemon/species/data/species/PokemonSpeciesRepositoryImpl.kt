@@ -61,14 +61,17 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
                 return Result.failure(GetSpeciesDetailsError())
             }
 
-        if (detailsResult.isSuccess) {
-            val details = detailsResult.getOrThrow()
-            val evolutionChainUrl = requireNotNull(details.evolutionChainUrl)
-            fetchEvolutionChain(evolutionChainUrl, storedSpecies.name)
+        val details = detailsResult.getOrNull()
+        if (details?.evolutionChainUrl != null) {
+            fetchEvolutionChain(details.evolutionChainUrl, storedSpecies.name)
                 .onSuccess {
                     localDataSource.updateEvolution(UpdateSpeciesEvolution(id, it))
                 }
                 .onFailure { return Result.failure(GetSpeciesEvolutionError()) }
+        } else {
+            localDataSource.updateEvolution(
+                UpdateSpeciesEvolution(id, SpeciesEntity.Evolution.Final)
+            )
         }
 
         return Result.success(Unit)
@@ -76,6 +79,12 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
 
     override suspend fun getSpeciesEvolution(id: Long): Result<Unit> {
         val species = localDataSource.getSpecies(id).first()
+        if (species.evolutionChainUrl == null) {
+            localDataSource.updateEvolution(
+                UpdateSpeciesEvolution(id, SpeciesEntity.Evolution.Final)
+            )
+            return Result.success(Unit)
+        }
         return fetchEvolutionChain(requireNotNull(species.evolutionChainUrl), species.name)
             .onSuccess { evolution ->
                 localDataSource.updateEvolution(UpdateSpeciesEvolution(id, evolution))

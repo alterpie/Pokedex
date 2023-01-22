@@ -1,6 +1,5 @@
 package com.assignment.catawiki.feature.feed.ui
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearEasing
@@ -30,7 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -49,7 +48,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -60,8 +58,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.assignment.catawiki.design.button.TextButton
 import com.assignment.catawiki.design.gradient.BottomGradient
 import com.assignment.catawiki.design.gradient.TopGradient
-import com.assignment.catawiki.design.theme.bottomGradient
-import com.assignment.catawiki.design.theme.topGradient
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.State
 import java.util.*
 import com.assignment.catawiki.design.R as DesignR
@@ -120,16 +116,14 @@ internal fun PokemonFeedScreen(
                 bottom = WindowInsets.navigationBars.asPaddingValues().calculateTopPadding()
             )
         ) {
-            itemsIndexed(state.items, key = { _, item -> item.id }) { index, item ->
+            items(state.items, key = { item -> item.id }) { item ->
                 PokemonItem(
                     name = item.name,
                     image = item.imageUrl,
                     onClick = { onPokemonClick(item.id) }
                 )
 
-                if (index != state.items.lastIndex) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
+                Spacer(modifier = Modifier.height(16.dp))
             }
             item {
                 PaginationLoadingIndicator(state.loadingState is State.LoadingState.Pagination)

@@ -2,7 +2,7 @@ package com.assignment.catawiki.pokemon.species.data.species.mapper
 
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesDetails
 import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesDetailsDto
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 internal class PokemonSpeciesDetailsDtoMapper @Inject constructor() {
@@ -14,7 +14,7 @@ internal class PokemonSpeciesDetailsDtoMapper @Inject constructor() {
                 textEntry.language.name.equals(Locale.ENGLISH.language, ignoreCase = true)
             }?.text ?: "",
             captureRate,
-            evolutionChain.url,
+            evolutionChain?.url,
         )
     }
 }
