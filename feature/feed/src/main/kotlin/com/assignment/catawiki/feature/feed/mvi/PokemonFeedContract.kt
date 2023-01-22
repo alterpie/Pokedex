@@ -1,9 +1,9 @@
 package com.assignment.catawiki.feature.feed.mvi
 
+import com.assignment.catawiki.feature.feed.presentation.model.PokemonSpeciesFeedItem
 import com.assignment.catawiki.mvi.UiEffect
 import com.assignment.catawiki.mvi.UiEvent
 import com.assignment.catawiki.mvi.UiState
-import com.assignment.catawiki.feature.feed.presentation.model.PokemonSpeciesFeedItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -13,7 +13,7 @@ interface PokemonFeedContract {
         object GetFeed : Event
         object GetFeedNextPage : Event
         object GetInitialPage : Event
-        object RefreshPage : Event
+        object RefreshFeed : Event
         object RetryLoadFeed : Event
     }
 
@@ -32,13 +32,12 @@ interface PokemonFeedContract {
     ) : UiState {
 
         sealed interface LoadingState {
-            object Initial : LoadingState
             object Pagination : LoadingState
             object Refresh : LoadingState
         }
 
         sealed interface LoadingError {
-            object InitialLoadingFailed : LoadingError
+            object LoadingFailed : LoadingError
             object PaginationLoadingFailed : LoadingError
         }
     }

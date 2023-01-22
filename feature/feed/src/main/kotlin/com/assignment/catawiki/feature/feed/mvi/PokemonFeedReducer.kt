@@ -3,8 +3,8 @@ package com.assignment.catawiki.feature.feed.mvi
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.Effect
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.State
 import com.assignment.catawiki.mvi.Reducer
-import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
+import kotlinx.collections.immutable.toImmutableList
 
 class PokemonFeedReducer @Inject constructor() : Reducer<Effect, State> {
 
@@ -18,7 +18,7 @@ class PokemonFeedReducer @Inject constructor() : Reducer<Effect, State> {
             loadingState = null,
         )
         Effect.DisplayLoadingFailure -> currentState.copy(
-            loadingError = State.LoadingError.InitialLoadingFailed,
+            loadingError = State.LoadingError.LoadingFailed,
             loadingState = null,
         )
         Effect.DisplayPaginationLoading -> currentState.copy(

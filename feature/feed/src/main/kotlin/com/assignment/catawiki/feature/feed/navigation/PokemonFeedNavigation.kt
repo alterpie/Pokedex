@@ -24,7 +24,7 @@ fun NavGraphBuilder.pokemonFeedScreen(onPokemonClick: (Long) -> Unit) {
             state = state,
             onPokemonClick = onPokemonClick,
             onShouldLoadNextPage = { viewModel.onEvent(Event.GetFeedNextPage) },
-            onRefreshScreen = { viewModel.onEvent(Event.RefreshPage) },
+            onRefreshScreen = { viewModel.onEvent(Event.RefreshFeed) },
             onRetryClick = { viewModel.onEvent(Event.RetryLoadFeed) }
         )
     }

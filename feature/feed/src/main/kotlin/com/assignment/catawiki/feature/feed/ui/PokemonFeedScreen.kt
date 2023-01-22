@@ -114,7 +114,7 @@ internal fun PokemonFeedScreen(
             }
         }
 
-        if (state.loadingError is State.LoadingError.InitialLoadingFailed) {
+        if (state.loadingError is State.LoadingError.LoadingFailed) {
             InitialLoadingFailedSection(onRetryClick = onRetryClick)
         }
 
