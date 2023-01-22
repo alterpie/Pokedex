@@ -13,17 +13,47 @@ android {
         }
     }
 
+    signingConfigs {
+
+        debug {
+            def keystoreProperties = new Properties()
+            File keystoreFile = rootProject.file("config/keys/keystore/keystore.properties")
+            keystoreProperties.load(new FileInputStream(keystoreFile))
+
+            storeFile file(rootDir.getCanonicalPath() + '/' + keystoreProperties['keyStorePath'])
+            storePassword keystoreProperties['keyStorePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+
+        release {
+            def keystoreProperties = new Properties()
+//            TODO change to release key
+            File keystoreFile = rootProject.file("config/keys/keystore/keystore.properties")
+            if (keystoreFile.exists()) {
+                keystoreProperties.load(new FileInputStream(keystoreFile))
+            }
+
+            storeFile file(rootDir.getCanonicalPath() + '/' + keystoreProperties['keyStorePath'])
+            storePassword keystoreProperties['keyStorePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
+
     buildTypes {
 
         debug {
             applicationIdSuffix ".debug"
             debuggable true
+            signingConfig signingConfigs.debug
         }
 
         release {
             debuggable false
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 
