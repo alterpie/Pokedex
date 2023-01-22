@@ -5,7 +5,7 @@ import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSp
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesEvolution
 import kotlinx.coroutines.flow.Flow
 
-interface PokemonSpeciesLocalDataSource {
+internal interface PokemonSpeciesLocalDataSource {
 
     fun getAllSpecies(): Flow<List<SpeciesEntity>>
     fun getSpecies(id: Long): Flow<SpeciesEntity>

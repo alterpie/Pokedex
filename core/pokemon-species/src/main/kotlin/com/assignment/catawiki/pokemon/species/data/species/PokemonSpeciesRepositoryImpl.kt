@@ -17,10 +17,10 @@ import com.assignment.catawiki.pokemon.species.domain.error.GetSpeciesDetailsErr
 import com.assignment.catawiki.pokemon.species.domain.error.GetSpeciesEvolutionError
 import com.assignment.catawiki.pokemon.species.domain.error.GetSpeciesPageError
 import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 internal class PokemonSpeciesRepositoryImpl @Inject constructor(
     private val remoteDataSource: PokemonSpeciesRemoteDataSource,
@@ -44,7 +44,9 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
 
     override suspend fun getSpeciesDetails(id: Long): Result<Unit> {
         val storedSpecies = localDataSource.getSpecies(id).first()
-        if (storedSpecies.description != null) return Result.success(Unit)
+        if (storedSpecies.description != null && storedSpecies.evolution == null) {
+            return getSpeciesEvolution(id)
+        }
 
         val detailsResult = runCatchingFromSuspend {
             remoteDataSource.fetchPokemonDetails(id)
@@ -75,7 +77,9 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
         return fetchEvolutionChain(requireNotNull(species.evolutionChainUrl), species.name)
             .onSuccess { evolution ->
                 localDataSource.updateEvolution(UpdateSpeciesEvolution(id, evolution))
-            }.map { }
+            }
+            .onFailure { return Result.failure(GetSpeciesEvolutionError()) }
+            .map { }
     }
 
     private suspend fun fetchEvolutionChain(

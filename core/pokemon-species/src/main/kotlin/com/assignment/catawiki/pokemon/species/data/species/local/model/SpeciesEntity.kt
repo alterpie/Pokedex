@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "species")
-data class SpeciesEntity(
+internal data class SpeciesEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")
     val id: Long,

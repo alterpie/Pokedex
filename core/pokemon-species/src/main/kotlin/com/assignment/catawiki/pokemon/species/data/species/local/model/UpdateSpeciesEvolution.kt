@@ -2,7 +2,7 @@ package com.assignment.catawiki.pokemon.species.data.species.local.model
 
 import androidx.room.ColumnInfo
 
-data class UpdateSpeciesEvolution(
+internal data class UpdateSpeciesEvolution(
     @ColumnInfo(name = "id")
     val id: Long,
     @ColumnInfo(name = "evolution")

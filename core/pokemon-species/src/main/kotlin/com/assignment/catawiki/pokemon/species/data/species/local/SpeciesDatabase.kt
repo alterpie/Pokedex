@@ -8,7 +8,7 @@ import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesE
 
 @Database(entities = [SpeciesEntity::class], version = 1)
 @TypeConverters(value = [SpeciesEvolutionTypeConverter::class])
-abstract class SpeciesDatabase : RoomDatabase() {
+internal abstract class SpeciesDatabase : RoomDatabase() {
 
     abstract fun speciesDao(): SpeciesDao
 }

@@ -10,7 +10,7 @@ import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSp
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface SpeciesDao {
+internal interface SpeciesDao {
 
     @Query("SELECT * FROM species")
     fun getAllSpecies(): Flow<List<SpeciesEntity>>

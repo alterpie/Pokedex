@@ -8,8 +8,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.assignment.catawiki.details.presentation.PokemonDetailsViewModel
 import com.assignment.catawiki.details.di.PokemonDetailsComponentInjector
+import com.assignment.catawiki.details.mvi.PokemonDetailsContract.Event
+import com.assignment.catawiki.details.presentation.PokemonDetailsViewModel
 import com.assignment.catawiki.details.ui.PokemonDetailsScreen
 
 internal const val POKEMON_ID_NAV_PARAM = "pokemonId"
@@ -28,6 +29,10 @@ fun NavGraphBuilder.pokemonDetailsScreen() {
         )
         val state by viewModel.state.collectAsState()
 
-        PokemonDetailsScreen(state = state)
+        PokemonDetailsScreen(
+            state = state,
+            onRetryLoadDetailsClick = { viewModel.onEvent(Event.GetPokemonDetails(state.id)) },
+            onRetryLoadEvolutionClick = { viewModel.onEvent(Event.GetPokemonEvolution(state.id)) }
+        )
     }
 }

@@ -1,6 +1,7 @@
 package com.assignment.catawiki.design.button
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TextButton(
     text: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle.Default,
 ) {
@@ -25,6 +27,7 @@ fun TextButton(
         modifier = modifier
             .padding(vertical = 4.dp, horizontal = 16.dp)
             .clip(RoundedCornerShape(4.dp))
+            .clickable(onClick = onClick)
             .background(color = Color.LightGray),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -36,5 +39,5 @@ fun TextButton(
 @Preview
 @Composable
 private fun TextButtonPreview() {
-    TextButton(text = "Preview")
+    TextButton(text = "Preview", onClick = {})
 }

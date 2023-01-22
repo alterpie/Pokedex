@@ -1,50 +1,280 @@
 package com.assignment.catawiki.details.ui
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.assignment.catawiki.design.button.TextButton
 import com.assignment.catawiki.details.mvi.PokemonDetailsContract.State
 import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
+import java.util.Locale
+import com.assignment.catawiki.design.R as DesignR
 
 @Composable
-internal fun PokemonDetailsScreen(state: State) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .systemBarsPadding()
-    ) {
-        BasicText(text = state.name)
-        BasicText(text = state.description)
-        if (state.captureRate != null) {
-            val captureRateColor = if (state.captureRate < 0) Color.Red else Color.Green
+internal fun PokemonDetailsScreen(
+    state: State,
+    onRetryLoadDetailsClick: () -> Unit,
+    onRetryLoadEvolutionClick: () -> Unit,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .statusBarsPadding()
+                .padding(end = 16.dp)
+                .size(150.dp)
+                .alpha(0.5f),
+            painter = rememberAsyncImagePainter(model = state.imageUrl),
+            contentDescription = null,
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding()
+                .padding(horizontal = 16.dp)
+        ) {
+            BasicText(text = state.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
+            Spacer(modifier = Modifier.height(16.dp))
+            if (state.error is State.Error.LoadingDetailsFailed) {
+                ErrorSection(
+                    text = stringResource(DesignR.string.error_loading_details),
+                    onRetryClick = onRetryLoadDetailsClick
+                )
+            } else {
+                Crossfade(targetState = state.loadingDetails) { loading ->
+                    if (loading) {
+                        LoadingDetailsPlaceholder()
+                    } else {
+                        DetailsSection(
+                            description = state.description,
+                            captureRate = state.captureRate
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            if (state.error == null) {
+                Crossfade(targetState = state.loadingEvolution) { loading ->
+                    if (loading) {
+                        LoadingEvolutionPlaceholder()
+                    } else {
+                        EvolutionSection(evolution = state.evolution)
+                    }
+                }
+            } else if (state.error is State.Error.LoadingEvolutionFailed) {
+                ErrorSection(
+                    text = stringResource(DesignR.string.error_loading_evolution),
+                    onRetryClick = onRetryLoadEvolutionClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailsSection(description: String, captureRate: Int?) {
+    Column {
+        BasicText(text = description)
+        Spacer(modifier = Modifier.height(8.dp))
+        if (captureRate != null) {
+            val captureRateColor = if (captureRate < 0) Color.Red else Color.Green
+
+            val captureRateLabel = buildAnnotatedString {
+                val captureRateValue = kotlin.math.abs(captureRate)
+                val text = stringResource(
+                    DesignR.string.template_capture_rate,
+                    captureRateValue
+                )
+                append(text)
+                val startIndex = text.indexOf(captureRateValue.toString())
+                val endIndex = startIndex + captureRateValue.toString().length
+                addStyle(
+                    SpanStyle(color = captureRateColor),
+                    startIndex,
+                    endIndex
+                )
+            }
             BasicText(
-                text = state.captureRate.toString(),
-                style = TextStyle.Default.copy(color = captureRateColor)
+                text = captureRateLabel,
             )
         }
-        when (state.evolution) {
+    }
+
+}
+
+@Composable
+private fun EvolutionSection(evolution: PokemonSpecies.Evolution?) {
+    Column {
+        when (evolution) {
             PokemonSpecies.Evolution.Final -> {
-                BasicText(text = stringResource(com.assignment.catawiki.design.R.string.final_evolution_chain))
+                BasicText(text = stringResource(DesignR.string.final_evolution_link))
             }
             is PokemonSpecies.Evolution.EvolvesTo -> {
-                BasicText(text = state.evolution.name)
-                Image(
-                    modifier = Modifier.size(80.dp),
-                    painter = rememberAsyncImagePainter(model = state.evolution.imageUrl),
-                    contentDescription = null,
-                )
+                BasicText(text = stringResource(DesignR.string.evolves_to))
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(160.dp)
+                        .border(
+                            width = 2.dp,
+                            color = Color.Black,
+                            shape = RoundedCornerShape(16.dp)
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Image(
+                        modifier = Modifier.size(150.dp),
+                        painter = rememberAsyncImagePainter(model = evolution.imageUrl),
+                        contentDescription = null,
+                    )
+                    Spacer(modifier = Modifier.width(32.dp))
+                    BasicText(modifier = Modifier
+                        .padding(bottom = 16.dp, end = 16.dp),
+                        text = evolution.name.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                        })
+                }
             }
             null -> Unit
         }
+    }
+}
+
+@Composable
+private fun LoadingDetailsPlaceholder() {
+    val transition = rememberInfiniteTransition()
+    val color by transition.animateColor(
+        initialValue = Color.LightGray,
+        targetValue = Color.LightGray.copy(alpha = 0.5f),
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse,
+        )
+    )
+    Column {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = color)
+                .size(width = 150.dp, height = 28.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = color)
+                .size(width = 100.dp, height = 28.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = color)
+                .size(width = 180.dp, height = 28.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = color)
+                .size(width = 110.dp, height = 28.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = color)
+                .size(width = 110.dp, height = 28.dp)
+        )
+    }
+}
+
+@Composable
+private fun LoadingEvolutionPlaceholder() {
+    val bgColorTransition = rememberInfiniteTransition()
+    val bgColor by bgColorTransition.animateColor(
+        initialValue = Color.LightGray,
+        targetValue = Color.LightGray.copy(alpha = 0.5f),
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse,
+        )
+    )
+
+    val contentColorTransition = rememberInfiniteTransition()
+    val contentColor by contentColorTransition.animateColor(
+        initialValue = Color.Gray,
+        targetValue = Color.Gray.copy(alpha = 0.5f),
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse,
+        )
+    )
+    Column(modifier = Modifier.padding(vertical = 16.dp)) {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = bgColor)
+                .size(width = 80.dp, height = 28.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = bgColor)
+                .fillMaxWidth()
+                .height(160.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 16.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(color = contentColor)
+                    .size(width = 110.dp, height = 28.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun ErrorSection(text: String, onRetryClick: () -> Unit) {
+    Column {
+        BasicText(text = text)
+        Spacer(modifier = Modifier.height(8.dp))
+        TextButton(text = stringResource(DesignR.string.retry), onClick = onRetryClick)
     }
 }

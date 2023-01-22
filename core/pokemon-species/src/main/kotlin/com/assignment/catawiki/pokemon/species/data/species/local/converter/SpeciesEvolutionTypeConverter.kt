@@ -3,7 +3,7 @@ package com.assignment.catawiki.pokemon.species.data.species.local.converter
 import androidx.room.TypeConverter
 import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
 
-class SpeciesEvolutionTypeConverter {
+internal class SpeciesEvolutionTypeConverter {
 
     @TypeConverter
     fun fromString(value: String): SpeciesEntity.Evolution {
