@@ -1,6 +1,9 @@
 package com.assignment.catawiki.network.di
 
+import android.content.Context
 import com.assignment.catawiki.network.BuildConfig
+import com.assignment.catawiki.network.interceptor.NetworkAvailabilityInterceptor
+import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -24,12 +27,18 @@ interface NetworkComponent {
 
     @Component.Factory
     interface Factory {
-        fun create(): NetworkComponent
+        fun create(@BindsInstance context: Context): NetworkComponent
     }
 }
 
 @Module
 private object NetworkModule {
+
+    @Singleton
+    @Provides
+    fun networkAvailabilityInterceptor(context: Context): NetworkAvailabilityInterceptor {
+        return NetworkAvailabilityInterceptor(context)
+    }
 
     @Provides
     @Singleton
@@ -40,9 +49,11 @@ private object NetworkModule {
     @Singleton
     @Provides
     fun okHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        networkAvailabilityInterceptor: NetworkAvailabilityInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
+            .addNetworkInterceptor(networkAvailabilityInterceptor)
             .apply {
                 if (BuildConfig.DEBUG) addInterceptor(httpLoggingInterceptor)
             }
