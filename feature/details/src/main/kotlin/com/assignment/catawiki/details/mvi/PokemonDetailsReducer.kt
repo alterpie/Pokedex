@@ -26,10 +26,11 @@ class PokemonDetailsReducer @Inject constructor() : Reducer<Effect, State> {
         }
         is Effect.DisplayLoadingDetailsFailed -> currentState.copy(
             loadingDetails = false,
+            loadingEvolution = false,
             error = State.Error.LoadingDetailsFailed(effect.id),
         )
         is Effect.DisplayLoadingEvolutionFailed -> currentState.copy(
-            loadingDetails = false,
+            loadingEvolution = false,
             error = State.Error.LoadingEvolutionFailed(effect.id),
         )
         Effect.DisplayLoadingDetails -> currentState.copy(
