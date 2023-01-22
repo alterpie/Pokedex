@@ -258,13 +258,18 @@ internal class PokemonSpeciesRepositoryImplTest {
     }
 
     @Test
-    fun `should not get species details from remote data source when description is present`() =
+    fun `should not get species details and evolution from remote data source when both are present`() =
         runTest {
             val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
                 coEvery { fetchEvolutionChain(any()) } returns mockk()
             }
             val localDataSource = mockk<PokemonSpeciesLocalDataSource> {
-                every { getSpecies(any()) } returns flowOf(buildSpeciesEntity())
+                every { getSpecies(any()) } returns flowOf(
+                    buildSpeciesEntity().copy(
+                        evolution = SpeciesEntity.Evolution.Final,
+                        description = "description"
+                    )
+                )
             }
 
             val repository = PokemonSpeciesRepositoryImpl(
@@ -285,14 +290,19 @@ internal class PokemonSpeciesRepositoryImplTest {
         }
 
     @Test
-    fun `should get species details from remote data source when description is absent`() =
+    fun `should get species details and evolution from remote data source when description and evolution are absent`() =
         runTest {
             val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
                 coEvery { fetchEvolutionChain(any()) } returns mockk()
                 coEvery { fetchPokemonDetails(any()) } returns mockk()
             }
             val localDataSource = mockk<PokemonSpeciesLocalDataSource> {
-                every { getSpecies(any()) } returns flowOf(buildSpeciesEntity().copy(description = null))
+                every { getSpecies(any()) } returns flowOf(
+                    buildSpeciesEntity().copy(
+                        description = null,
+                        evolution = null
+                    )
+                )
             }
             val pokemonSpeciesDetailsDtoMapper = mockk<PokemonSpeciesDetailsDtoMapper> {
                 every { map(any()) } returns UpdateSpeciesDetails(
@@ -324,6 +334,57 @@ internal class PokemonSpeciesRepositoryImplTest {
                 remoteDataSource.fetchPokemonDetails(42L)
                 pokemonSpeciesDetailsDtoMapper.map(any())
                 localDataSource.updateDetails(any())
+                remoteDataSource.fetchEvolutionChain("chain url")
+                evolutionChainDtoMapper.map(any(), "name")
+                localDataSource.updateEvolution(
+                    UpdateSpeciesEvolution(42L, SpeciesEntity.Evolution.Final)
+                )
+            }
+        }
+
+    @Test
+    fun `should get species evolution from remote data source when getting details and description is present but evolution is not`() =
+        runTest {
+            val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
+                coEvery { fetchEvolutionChain(any()) } returns mockk()
+                coEvery { fetchPokemonDetails(any()) } returns mockk()
+            }
+            val localDataSource = mockk<PokemonSpeciesLocalDataSource> {
+                every { getSpecies(any()) } returns flowOf(
+                    buildSpeciesEntity().copy(
+                        description = "description",
+                        evolution = null
+                    )
+                )
+            }
+            val pokemonSpeciesDetailsDtoMapper = mockk<PokemonSpeciesDetailsDtoMapper> {
+                every { map(any()) } returns UpdateSpeciesDetails(
+                    42L,
+                    "description",
+                    42,
+                    "chain url"
+                )
+            }
+            val evolutionChainDtoMapper = mockk<EvolutionChainDtoMapper> {
+                every { map(any(), any()) } returns SpeciesEntity.Evolution.Final
+            }
+
+            val repository = PokemonSpeciesRepositoryImpl(
+                remoteDataSource,
+                localDataSource,
+                mockk(),
+                mockk(),
+                pokemonSpeciesDetailsDtoMapper,
+                evolutionChainDtoMapper,
+                mockk(),
+            )
+
+            val result = repository.getSpeciesDetails(42L)
+
+            result.isSuccess shouldBe true
+            coVerifyOrder {
+                localDataSource.getSpecies(42L)
+                localDataSource.getSpecies(42L)
                 remoteDataSource.fetchEvolutionChain("chain url")
                 evolutionChainDtoMapper.map(any(), "name")
                 localDataSource.updateEvolution(

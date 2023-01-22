@@ -46,6 +46,8 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
         val storedSpecies = localDataSource.getSpecies(id).first()
         if (storedSpecies.description != null && storedSpecies.evolution == null) {
             return getSpeciesEvolution(id)
+        } else if (storedSpecies.description != null && storedSpecies.evolution != null) {
+            return Result.success(Unit)
         }
 
         val detailsResult = runCatchingFromSuspend {
