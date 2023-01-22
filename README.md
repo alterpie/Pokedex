@@ -65,3 +65,4 @@ Such architecture is easily scalable since another handlers for screen contract'
 
 App architecture could be described by following scheme(without some intermediate abstractions as use cases):
 
+![App arch](assets/arch_scheme.png)
