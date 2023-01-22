@@ -175,15 +175,13 @@ private fun EvolutionSection(evolution: PokemonSpecies.Evolution?) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(160.dp)
+                        .clip(RoundedCornerShape(16.dp))
                         .border(
                             width = 2.dp,
                             color = MaterialTheme.colors.onBackground,
                             shape = RoundedCornerShape(16.dp)
                         )
-                        .background(
-                            color = MaterialTheme.colors.surface,
-                            shape = RoundedCornerShape(8.dp),
-                        ),
+                        .background(color = MaterialTheme.colors.surface),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Image(
