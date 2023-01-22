@@ -15,7 +15,7 @@ fun AppNavGraph() {
 
     NavHost(
         navController = navController,
-        startDestination = PokemonFeedScreenRoute
+        startDestination = PokemonFeedScreenRoute,
     ) {
         pokemonFeedScreen(onPokemonClick = { pokemonId ->
             navController.navigate(pokemonDetailsScreenRoute(pokemonId))

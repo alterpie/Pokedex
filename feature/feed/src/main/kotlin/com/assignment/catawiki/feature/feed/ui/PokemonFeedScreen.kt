@@ -267,7 +267,7 @@ private fun BoxScope.InitialLoadingFailedSection(onRetryClick: () -> Unit) {
     ) {
         BasicText(
             text = stringResource(DesignR.string.error_loading_feed_failed),
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.onBackground),
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(text = stringResource(DesignR.string.retry), onClick = onRetryClick)

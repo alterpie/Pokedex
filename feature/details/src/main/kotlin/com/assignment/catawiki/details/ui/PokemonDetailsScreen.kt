@@ -24,19 +24,21 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.assignment.catawiki.design.button.TextButton
+import com.assignment.catawiki.design.gradient.BottomGradient
+import com.assignment.catawiki.design.gradient.TopGradient
 import com.assignment.catawiki.details.mvi.PokemonDetailsContract.State
 import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import java.util.Locale
@@ -48,7 +50,11 @@ internal fun PokemonDetailsScreen(
     onRetryLoadDetailsClick: () -> Unit,
     onRetryLoadEvolutionClick: () -> Unit,
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colors.background)
+    ) {
         Image(
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -65,7 +71,10 @@ internal fun PokemonDetailsScreen(
                 .systemBarsPadding()
                 .padding(horizontal = 16.dp)
         ) {
-            BasicText(text = state.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
+            BasicText(
+                text = state.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
+                style = MaterialTheme.typography.h1.copy(color = MaterialTheme.colors.onBackground),
+            )
             Spacer(modifier = Modifier.height(16.dp))
             if (state.error is State.Error.LoadingDetailsFailed) {
                 ErrorSection(
@@ -101,16 +110,26 @@ internal fun PokemonDetailsScreen(
                 )
             }
         }
+
+        TopGradient()
+        BottomGradient()
     }
 }
 
 @Composable
 private fun DetailsSection(description: String, captureRate: Int?) {
     Column {
-        BasicText(text = description)
+        BasicText(
+            text = description,
+            style = MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.onBackground)
+        )
         Spacer(modifier = Modifier.height(8.dp))
         if (captureRate != null) {
-            val captureRateColor = if (captureRate < 0) Color.Red else Color.Green
+            val captureRateColor = if (captureRate < 0) {
+                MaterialTheme.colors.error
+            } else {
+                MaterialTheme.colors.secondary
+            }
 
             val captureRateLabel = buildAnnotatedString {
                 val captureRateValue = kotlin.math.abs(captureRate)
@@ -129,6 +148,7 @@ private fun DetailsSection(description: String, captureRate: Int?) {
             }
             BasicText(
                 text = captureRateLabel,
+                style = MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.onBackground)
             )
         }
     }
@@ -140,10 +160,16 @@ private fun EvolutionSection(evolution: PokemonSpecies.Evolution?) {
     Column {
         when (evolution) {
             PokemonSpecies.Evolution.Final -> {
-                BasicText(text = stringResource(DesignR.string.final_evolution_link))
+                BasicText(
+                    text = stringResource(DesignR.string.final_evolution_link),
+                    style = MaterialTheme.typography.h1.copy(color = MaterialTheme.colors.onBackground)
+                )
             }
             is PokemonSpecies.Evolution.EvolvesTo -> {
-                BasicText(text = stringResource(DesignR.string.evolves_to))
+                BasicText(
+                    text = stringResource(DesignR.string.evolves_to),
+                    style = MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.onBackground)
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier
@@ -151,8 +177,12 @@ private fun EvolutionSection(evolution: PokemonSpecies.Evolution?) {
                         .height(160.dp)
                         .border(
                             width = 2.dp,
-                            color = Color.Black,
+                            color = MaterialTheme.colors.onBackground,
                             shape = RoundedCornerShape(16.dp)
+                        )
+                        .background(
+                            color = MaterialTheme.colors.surface,
+                            shape = RoundedCornerShape(8.dp),
                         ),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -161,12 +191,15 @@ private fun EvolutionSection(evolution: PokemonSpecies.Evolution?) {
                         painter = rememberAsyncImagePainter(model = evolution.imageUrl),
                         contentDescription = null,
                     )
-                    Spacer(modifier = Modifier.width(32.dp))
-                    BasicText(modifier = Modifier
-                        .padding(bottom = 16.dp, end = 16.dp),
+                    Spacer(modifier = Modifier.width(24.dp))
+                    BasicText(
+                        modifier = Modifier
+                            .padding(bottom = 16.dp, end = 16.dp),
                         text = evolution.name.replaceFirstChar {
                             if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-                        })
+                        },
+                        style = MaterialTheme.typography.h1.copy(color = MaterialTheme.colors.onSurface)
+                    )
                 }
             }
             null -> Unit
@@ -178,8 +211,8 @@ private fun EvolutionSection(evolution: PokemonSpecies.Evolution?) {
 private fun LoadingDetailsPlaceholder() {
     val transition = rememberInfiniteTransition()
     val color by transition.animateColor(
-        initialValue = Color.LightGray,
-        targetValue = Color.LightGray.copy(alpha = 0.5f),
+        initialValue = MaterialTheme.colors.surface,
+        targetValue = MaterialTheme.colors.surface.copy(alpha = 0.5f),
         animationSpec = infiniteRepeatable(
             animation = tween(1000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse,
@@ -227,8 +260,8 @@ private fun LoadingDetailsPlaceholder() {
 private fun LoadingEvolutionPlaceholder() {
     val bgColorTransition = rememberInfiniteTransition()
     val bgColor by bgColorTransition.animateColor(
-        initialValue = Color.LightGray,
-        targetValue = Color.LightGray.copy(alpha = 0.5f),
+        initialValue = MaterialTheme.colors.surface,
+        targetValue = MaterialTheme.colors.surface.copy(alpha = 0.5f),
         animationSpec = infiniteRepeatable(
             animation = tween(1000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse,
@@ -237,8 +270,8 @@ private fun LoadingEvolutionPlaceholder() {
 
     val contentColorTransition = rememberInfiniteTransition()
     val contentColor by contentColorTransition.animateColor(
-        initialValue = Color.Gray,
-        targetValue = Color.Gray.copy(alpha = 0.5f),
+        initialValue = MaterialTheme.colors.onSurface,
+        targetValue = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
         animationSpec = infiniteRepeatable(
             animation = tween(1000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse,
@@ -273,7 +306,10 @@ private fun LoadingEvolutionPlaceholder() {
 @Composable
 private fun ErrorSection(text: String, onRetryClick: () -> Unit) {
     Column {
-        BasicText(text = text)
+        BasicText(
+            text = text,
+            style = MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.onBackground)
+        )
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(text = stringResource(DesignR.string.retry), onClick = onRetryClick)
     }

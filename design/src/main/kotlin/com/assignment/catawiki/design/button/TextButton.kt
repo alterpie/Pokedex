@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,12 +21,12 @@ fun TextButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = MaterialTheme.typography.body1,
+    textStyle: TextStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.onSurface),
 ) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(4.dp))
-            .background(color = Color.LightGray)
+            .background(color = MaterialTheme.colors.surface)
             .clickable(onClick = onClick)
             .padding(vertical = 4.dp, horizontal = 16.dp),
         horizontalArrangement = Arrangement.Center,
