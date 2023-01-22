@@ -1,4 +1,4 @@
-package com.assignment.catawiki.ui.theme
+package com.assignment.catawiki.design.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

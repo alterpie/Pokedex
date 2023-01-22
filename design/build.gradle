@@ -13,6 +13,7 @@ dependencies {
     implementation(
         libs.compose.ui,
         libs.compose.foundation,
+        libs.compose.material,
         libs.compose.ui.tooling,
     )
 }

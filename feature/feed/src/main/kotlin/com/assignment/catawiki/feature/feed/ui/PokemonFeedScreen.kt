@@ -1,5 +1,6 @@
 package com.assignment.catawiki.feature.feed.ui
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearEasing
@@ -10,6 +11,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,17 +20,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.pullRefreshIndicatorTransform
@@ -43,13 +50,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.assignment.catawiki.design.button.TextButton
+import com.assignment.catawiki.design.gradient.BottomGradient
+import com.assignment.catawiki.design.gradient.TopGradient
+import com.assignment.catawiki.design.theme.bottomGradient
+import com.assignment.catawiki.design.theme.topGradient
 import com.assignment.catawiki.feature.feed.mvi.PokemonFeedContract.State
 import java.util.*
 import com.assignment.catawiki.design.R as DesignR
@@ -66,7 +78,11 @@ internal fun PokemonFeedScreen(
     val context = LocalContext.current
     LaunchedEffect(state.loadingError) {
         if (state.loadingError is State.LoadingError.PaginationLoadingFailed) {
-            Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                context,
+                context.getString(DesignR.string.error_loading_feed_next_page_failed),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
     val pullRefreshState = rememberPullRefreshState(
@@ -78,6 +94,7 @@ internal fun PokemonFeedScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colors.background)
             .pullRefresh(state = pullRefreshState)
     ) {
         val lazyListState = rememberLazyListState()
@@ -96,7 +113,12 @@ internal fun PokemonFeedScreen(
         }
         LazyColumn(
             state = lazyListState,
-            contentPadding = PaddingValues(16.dp)
+            contentPadding = PaddingValues(
+                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+                start = 16.dp,
+                end = 16.dp,
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateTopPadding()
+            )
         ) {
             itemsIndexed(state.items, key = { _, item -> item.id }) { index, item ->
                 PokemonItem(
@@ -137,14 +159,20 @@ private fun PokemonItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colors.onBackground,
+                shape = RoundedCornerShape(8.dp)
+            )
             .clip(RoundedCornerShape(8.dp))
+            .background(color = MaterialTheme.colors.surface)
             .clickable(onClick = onClick)
             .padding(16.dp)
             .height(60.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            modifier = Modifier.size(60.dp),
+            modifier = Modifier.size(70.dp),
             painter = rememberAsyncImagePainter(model = image),
             contentDescription = null,
             contentScale = ContentScale.Crop,
@@ -153,44 +181,9 @@ private fun PokemonItem(
         BasicText(
             modifier = Modifier.padding(horizontal = 16.dp),
             text = name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
+            style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.onSurface),
         )
     }
-}
-
-@Composable
-private fun BoxScope.TopGradient() {
-    Box(
-        modifier = Modifier
-            .align(Alignment.TopCenter)
-            .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Black,
-                        Color.Transparent
-                    )
-                )
-            )
-            .height(40.dp)
-    )
-}
-
-@Composable
-private fun BoxScope.BottomGradient() {
-    Box(
-        modifier = Modifier
-            .align(Alignment.BottomCenter)
-            .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Transparent,
-                        Color.Black
-                    )
-                )
-            )
-            .height(40.dp)
-    )
 }
 
 @Composable
@@ -206,7 +199,9 @@ private fun PaginationLoadingIndicator(isLoading: Boolean) {
         )
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Image(
@@ -266,11 +261,16 @@ private fun BoxScope.PullRefreshLoadingIndicator(
 
 @Composable
 private fun BoxScope.InitialLoadingFailedSection(onRetryClick: () -> Unit) {
-    Column(modifier = Modifier.align(Alignment.Center)) {
+    Column(
+        modifier = Modifier.align(Alignment.Center),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         BasicText(
-            modifier = Modifier.clickable(onClick = onRetryClick),
-            text = "Loading failed"
+            text = stringResource(DesignR.string.error_loading_feed_failed),
+            style = MaterialTheme.typography.subtitle1,
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        TextButton(text = stringResource(DesignR.string.retry), onClick = onRetryClick)
     }
 }
 

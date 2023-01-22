@@ -11,11 +11,13 @@ android {
 
 dependencies {
     implementation(
+        projects.design,
         projects.feature.feed,
         projects.feature.details,
 
+        libs.compose.foundation,
         libs.compose.activity,
-        libs.compose.material,
         libs.compose.navigation,
+        libs.compose.accompanist.systemuicontroller,
     )
 }

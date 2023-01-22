@@ -25,7 +25,6 @@ internal class PokemonSpeciesRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun fetchEvolutionChain(path: String): EvolutionChainDto {
         delay(2000)
-        throw IllegalStateException("no pokemon evolution")
-//        return httpClient.get(path).body()
+        return httpClient.get(path).body()
     }
 }
