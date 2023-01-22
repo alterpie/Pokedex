@@ -72,6 +72,8 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 
 # Compose
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-animation = { module = "androidx.compose.animation:animation" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-material = { module = "androidx.compose.material:material" }

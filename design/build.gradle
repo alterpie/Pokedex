@@ -3,7 +3,16 @@ plugins {
     alias libs.plugins.kotlin.android
 }
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-library.gradle"
+apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-compose.gradle"
 
 android {
     namespace 'com.assignment.catawiki.design'
+}
+
+dependencies {
+    implementation(
+        libs.compose.ui,
+        libs.compose.foundation,
+        libs.compose.ui.tooling,
+    )
 }
