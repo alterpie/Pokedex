@@ -24,8 +24,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
@@ -74,6 +76,7 @@ internal fun PokemonDetailsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .systemBarsPadding()
                 .padding(horizontal = 16.dp)
         ) {
@@ -117,6 +120,7 @@ internal fun PokemonDetailsScreen(
                     onRetryClick = onRetryLoadEvolutionClick
                 )
             }
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
         TopGradient()
