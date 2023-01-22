@@ -20,7 +20,7 @@ internal val LightColorPalette = lightColors(
     surface = Color(0xFFDAD0D0),
     onBackground = Color(0xFF161616),
     onSurface = Color(0xFF292929),
-    secondary = Color(0xFF386109),
+    secondary = Color(0xFF83DF19),
     error = Color(0xFFBE0000),
 )
 

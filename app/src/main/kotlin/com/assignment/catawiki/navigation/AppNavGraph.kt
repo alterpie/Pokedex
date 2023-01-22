@@ -20,6 +20,6 @@ fun AppNavGraph() {
         pokemonFeedScreen(onPokemonClick = { pokemonId ->
             navController.navigate(pokemonDetailsScreenRoute(pokemonId))
         })
-        pokemonDetailsScreen()
+        pokemonDetailsScreen(onBackClick = { navController.navigateUp() })
     }
 }

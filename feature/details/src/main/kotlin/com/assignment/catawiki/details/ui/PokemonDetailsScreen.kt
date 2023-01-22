@@ -10,6 +10,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,12 +27,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -49,6 +54,7 @@ internal fun PokemonDetailsScreen(
     state: State,
     onRetryLoadDetailsClick: () -> Unit,
     onRetryLoadEvolutionClick: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -71,6 +77,8 @@ internal fun PokemonDetailsScreen(
                 .systemBarsPadding()
                 .padding(horizontal = 16.dp)
         ) {
+            TopAppBar(onBackClick = onBackClick)
+            Spacer(modifier = Modifier.height(8.dp))
             BasicText(
                 text = state.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
                 style = MaterialTheme.typography.h1.copy(color = MaterialTheme.colors.onBackground),
@@ -113,6 +121,26 @@ internal fun PokemonDetailsScreen(
 
         TopGradient()
         BottomGradient()
+    }
+}
+
+@Composable
+private fun TopAppBar(onBackClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(DesignR.drawable.ic_arrow_back), contentDescription = null,
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onBackground),
+            modifier = Modifier.clickable(
+                MutableInteractionSource(),
+                rememberRipple(bounded = false),
+                onClick = onBackClick
+            )
+        )
     }
 }
 
@@ -189,7 +217,7 @@ private fun EvolutionSection(evolution: PokemonSpecies.Evolution?) {
                         painter = rememberAsyncImagePainter(model = evolution.imageUrl),
                         contentDescription = null,
                     )
-                    Spacer(modifier = Modifier.width(24.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
                     BasicText(
                         modifier = Modifier
                             .padding(bottom = 16.dp, end = 16.dp),

@@ -19,7 +19,7 @@ fun pokemonDetailsScreenRoute(pokemonId: Long): String {
     return "details/$pokemonId"
 }
 
-fun NavGraphBuilder.pokemonDetailsScreen() {
+fun NavGraphBuilder.pokemonDetailsScreen(onBackClick: () -> Unit) {
     composable(
         PokemonDetailsScreenRoute,
         arguments = listOf(navArgument(POKEMON_ID_NAV_PARAM) { type = NavType.LongType })
@@ -32,7 +32,8 @@ fun NavGraphBuilder.pokemonDetailsScreen() {
         PokemonDetailsScreen(
             state = state,
             onRetryLoadDetailsClick = { viewModel.onEvent(Event.GetPokemonDetails(state.id)) },
-            onRetryLoadEvolutionClick = { viewModel.onEvent(Event.GetPokemonEvolution(state.id)) }
+            onRetryLoadEvolutionClick = { viewModel.onEvent(Event.GetPokemonEvolution(state.id)) },
+            onBackClick = onBackClick,
         )
     }
 }
