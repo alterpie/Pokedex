@@ -3,9 +3,7 @@ package com.assignment.catawiki.pokemon.species.data.species.mapper
 import android.net.Uri
 import com.assignment.catawiki.pokemon.species.BuildConfig
 import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
-import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesDto
-import com.assignment.catawiki.pokemon.species.domain.model.PokemonSpecies
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -30,6 +28,7 @@ internal class PokemonSpeciesDtoMapperTest {
             42L,
             "name",
             "${BuildConfig.POKEMON_IMAGE_URL}42.png",
+            null,
             null,
             null,
             null,

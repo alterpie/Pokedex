@@ -21,9 +21,12 @@ internal data class SpeciesEntity(
     val evolutionChainUrl: String?,
     @ColumnInfo(name = "evolution")
     val evolution: Evolution?,
+    @ColumnInfo(name = "capture_rate_difference")
+    val captureRateDifference: Int?,
 ) {
     sealed interface Evolution {
         data class EvolvesTo(
+            val pokemonId: Long,
             val name: String,
             val imageUrl: String,
         ) : Evolution

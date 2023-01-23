@@ -11,7 +11,7 @@ internal class SpeciesEvolutionTypeConverter {
             "final" -> SpeciesEntity.Evolution.Final
             else -> {
                 val splits = value.split(" ")
-                SpeciesEntity.Evolution.EvolvesTo(splits[0], splits[1])
+                SpeciesEntity.Evolution.EvolvesTo(splits[0].toLong(), splits[1], splits[2])
             }
         }
     }
@@ -20,7 +20,7 @@ internal class SpeciesEvolutionTypeConverter {
     fun fromEvolution(evolution: SpeciesEntity.Evolution): String {
         return when (evolution) {
             SpeciesEntity.Evolution.Final -> "final"
-            is SpeciesEntity.Evolution.EvolvesTo -> "${evolution.name} ${evolution.imageUrl}"
+            is SpeciesEntity.Evolution.EvolvesTo -> "${evolution.pokemonId} ${evolution.name} ${evolution.imageUrl}"
         }
     }
 }

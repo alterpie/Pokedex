@@ -3,7 +3,6 @@ package com.assignment.catawiki.pokemon.species.data.species.mapper
 import android.net.Uri
 import com.assignment.catawiki.pokemon.species.BuildConfig
 import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
-import com.assignment.catawiki.pokemon.species.data.species.mapper.EvolutionChainDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.remote.model.EvolutionChainDto
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -37,6 +36,7 @@ internal class EvolutionChainDtoMapperTest {
         val mapped = mapper.map(dto, "charmander")
 
         mapped shouldBe SpeciesEntity.Evolution.EvolvesTo(
+            1L,
             "charmeleon",
             "${BuildConfig.POKEMON_IMAGE_URL}1.png"
         )
@@ -68,6 +68,7 @@ internal class EvolutionChainDtoMapperTest {
         val mapped = mapper.map(dto, "charmeleon")
 
         mapped shouldBe SpeciesEntity.Evolution.EvolvesTo(
+            2L,
             "charizard",
             "${BuildConfig.POKEMON_IMAGE_URL}2.png"
         )

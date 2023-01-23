@@ -5,6 +5,7 @@ import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
 import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
+import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateCaptureRateDifference
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesDetails
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesEvolution
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,9 @@ internal interface SpeciesDao {
 
     @Update(entity = SpeciesEntity::class)
     suspend fun updateEvolution(updateSpeciesEvolution: UpdateSpeciesEvolution)
+
+    @Update(entity = SpeciesEntity::class)
+    suspend fun updateCaptureDifferenceRate(updateCaptureRateDifference: UpdateCaptureRateDifference)
 
     @Query("DELETE FROM species")
     suspend fun deleteAll()

@@ -17,6 +17,7 @@ internal class SpeciesEntityMapperTest {
             42,
             "evolution chain url",
             SpeciesEntity.Evolution.Final,
+            24,
         )
         val mapper = SpeciesEntityMapper()
 
@@ -27,7 +28,7 @@ internal class SpeciesEntityMapperTest {
             "charmander",
             "image url",
             "description",
-            42,
+            24,
             PokemonSpecies.Evolution.Final,
         )
     }
@@ -41,7 +42,8 @@ internal class SpeciesEntityMapperTest {
             "description",
             42,
             "evolution chain url",
-            SpeciesEntity.Evolution.EvolvesTo("charmeleon", "other image url"),
+            SpeciesEntity.Evolution.EvolvesTo(43, "charmeleon", "other image url"),
+            24,
         )
         val mapper = SpeciesEntityMapper()
 
@@ -52,7 +54,7 @@ internal class SpeciesEntityMapperTest {
             "charmander",
             "image url",
             "description",
-            42,
+            24,
             PokemonSpecies.Evolution.EvolvesTo("charmeleon", "other image url"),
         )
     }

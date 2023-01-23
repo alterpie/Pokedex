@@ -2,7 +2,7 @@
 <resources>
     <string name="final_evolution_link">Final evolution link</string>
     <string name="evolves_to">Evolves to:</string>
-    <string name="template_capture_rate">Capture rate: %d</string>
+    <string name="template_capture_rate_difference">Capture rate difference: %d</string>
     <string name="retry">Retry</string>
     <string name="error_loading_evolution">Failed to load evolution link</string>
     <string name="error_loading_details">Failed to load pokemon details</string>

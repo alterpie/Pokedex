@@ -12,7 +12,7 @@ internal class SpeciesEntityMapper @Inject constructor(){
             name,
             imageUrl,
             description,
-            captureRate,
+            captureRateDifference,
             evolution?.let(::mapEvolution),
         )
     }

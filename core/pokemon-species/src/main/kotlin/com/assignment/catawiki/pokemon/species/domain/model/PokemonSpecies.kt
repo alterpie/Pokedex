@@ -5,7 +5,7 @@ data class PokemonSpecies(
     val name: String,
     val imageUrl: String,
     val description: String?,
-    val captureRate: Int?,
+    val captureRateDifference: Int?,
     val evolution: Evolution?,
 ) {
     sealed interface Evolution {

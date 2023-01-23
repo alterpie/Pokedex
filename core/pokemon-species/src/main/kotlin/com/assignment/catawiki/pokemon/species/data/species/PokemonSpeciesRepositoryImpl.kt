@@ -6,6 +6,8 @@ import com.assignment.catawiki.pokemon.species.data.pagination.PokemonSpeciesFee
 import com.assignment.catawiki.pokemon.species.data.pagination.model.PaginationData
 import com.assignment.catawiki.pokemon.species.data.species.local.PokemonSpeciesLocalDataSource
 import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
+import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateCaptureRateDifference
+import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesDetails
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesEvolution
 import com.assignment.catawiki.pokemon.species.data.species.mapper.EvolutionChainDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDetailsDtoMapper
@@ -45,62 +47,60 @@ internal class PokemonSpeciesRepositoryImpl @Inject constructor(
     override suspend fun getSpeciesDetails(id: Long): Result<Unit> {
         val storedSpecies = localDataSource.getSpecies(id).first()
         if (storedSpecies.description != null && storedSpecies.evolution == null) {
-            return getSpeciesEvolution(id)
-        } else if (storedSpecies.description != null && storedSpecies.evolution != null) {
+            return runCatchingFromSuspend { getSpeciesEvolutionInternal(storedSpecies) }
+                .onFailure { return Result.failure(GetSpeciesEvolutionError()) }
+        } else if (storedSpecies.description != null) {
             return Result.success(Unit)
         }
 
-        val detailsResult = runCatchingFromSuspend {
-            remoteDataSource.fetchPokemonDetails(id)
-        }.map { detailsDto ->
-            val updateSpeciesDetails = pokemonSpeciesDetailsDtoMapper.map(detailsDto)
-            localDataSource.updateDetails(updateSpeciesDetails)
-            updateSpeciesDetails
-        }
-            .onFailure {
-                return Result.failure(GetSpeciesDetailsError())
-            }
+        runCatchingFromSuspend { getSpeciesDetailsInternal(id) }
+            .onFailure { return Result.failure(GetSpeciesDetailsError()) }
 
-        val details = detailsResult.getOrNull()
-        if (details?.evolutionChainUrl != null) {
-            fetchEvolutionChain(details.evolutionChainUrl, storedSpecies.name)
-                .onSuccess {
-                    localDataSource.updateEvolution(UpdateSpeciesEvolution(id, it))
-                }
-                .onFailure { return Result.failure(GetSpeciesEvolutionError()) }
-        } else {
-            localDataSource.updateEvolution(
-                UpdateSpeciesEvolution(id, SpeciesEntity.Evolution.Final)
-            )
-        }
+        val updatedSpecies = localDataSource.getSpecies(id).first()
+        runCatchingFromSuspend { getSpeciesEvolutionInternal(updatedSpecies) }
+            .onFailure { return Result.failure(GetSpeciesEvolutionError()) }
 
         return Result.success(Unit)
     }
 
-    override suspend fun getSpeciesEvolution(id: Long): Result<Unit> {
-        val species = localDataSource.getSpecies(id).first()
-        if (species.evolutionChainUrl == null) {
-            localDataSource.updateEvolution(
-                UpdateSpeciesEvolution(id, SpeciesEntity.Evolution.Final)
-            )
-            return Result.success(Unit)
-        }
-        return fetchEvolutionChain(requireNotNull(species.evolutionChainUrl), species.name)
-            .onSuccess { evolution ->
-                localDataSource.updateEvolution(UpdateSpeciesEvolution(id, evolution))
-            }
-            .onFailure { return Result.failure(GetSpeciesEvolutionError()) }
-            .map { }
+    private suspend fun getSpeciesDetailsInternal(id: Long): UpdateSpeciesDetails {
+        val detailsDto = remoteDataSource.fetchPokemonDetails(id)
+        val updateSpeciesDetails = pokemonSpeciesDetailsDtoMapper.map(detailsDto)
+        localDataSource.updateDetails(updateSpeciesDetails)
+        return updateSpeciesDetails
     }
 
-    private suspend fun fetchEvolutionChain(
-        url: String,
-        forSpeciesName: String
-    ): Result<SpeciesEntity.Evolution> {
-        return runCatchingFromSuspend { remoteDataSource.fetchEvolutionChain(url) }
-            .map { evolutionChainDto ->
-                evolutionChainDtoMapper.map(evolutionChainDto, forSpeciesName)
+    override suspend fun getSpeciesEvolution(id: Long): Result<Unit> {
+        val species = localDataSource.getSpecies(id).first()
+        return runCatchingFromSuspend { getSpeciesEvolutionInternal(species) }
+            .onFailure { return Result.failure(GetSpeciesEvolutionError()) }
+    }
+
+    private suspend fun getSpeciesEvolutionInternal(species: SpeciesEntity) {
+        if (species.evolutionChainUrl == null) {
+            localDataSource.updateEvolution(
+                UpdateSpeciesEvolution(species.id, SpeciesEntity.Evolution.Final)
+            )
+        } else {
+            val evolutionChainDto = remoteDataSource.fetchEvolutionChain(species.evolutionChainUrl)
+            val speciesEvolution = evolutionChainDtoMapper.map(evolutionChainDto, species.name)
+            if (speciesEvolution is SpeciesEntity.Evolution.EvolvesTo) {
+                val evolutionLinkDetails = getSpeciesDetailsInternal(speciesEvolution.pokemonId)
+                val captureRateDifference =
+                    if (species.captureRate != null && evolutionLinkDetails.captureRate != null) {
+                        species.captureRate - evolutionLinkDetails.captureRate
+                    } else {
+                        null
+                    }
+
+                captureRateDifference?.let {
+                    localDataSource.updateCaptureRateDifference(
+                        UpdateCaptureRateDifference(species.id, captureRateDifference)
+                    )
+                }
             }
+            localDataSource.updateEvolution(UpdateSpeciesEvolution(species.id, speciesEvolution))
+        }
     }
 
     override suspend fun getNextSpeciesPage(refresh: Boolean): Result<Unit> {

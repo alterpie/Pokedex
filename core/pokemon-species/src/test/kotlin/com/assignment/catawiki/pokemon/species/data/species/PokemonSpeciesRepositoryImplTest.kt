@@ -6,6 +6,7 @@ import com.assignment.catawiki.pokemon.species.data.pagination.PokemonSpeciesFee
 import com.assignment.catawiki.pokemon.species.data.pagination.model.PaginationData
 import com.assignment.catawiki.pokemon.species.data.species.local.PokemonSpeciesLocalDataSource
 import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
+import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateCaptureRateDifference
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesDetails
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesEvolution
 import com.assignment.catawiki.pokemon.species.data.species.mapper.EvolutionChainDtoMapper
@@ -13,6 +14,7 @@ import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpecie
 import com.assignment.catawiki.pokemon.species.data.species.mapper.PokemonSpeciesDtoMapper
 import com.assignment.catawiki.pokemon.species.data.species.mapper.SpeciesEntityMapper
 import com.assignment.catawiki.pokemon.species.data.species.remote.PokemonSpeciesRemoteDataSource
+import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesDetailsDto
 import com.assignment.catawiki.pokemon.species.data.species.remote.model.PokemonSpeciesFeedPaginationDto
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -222,29 +224,94 @@ internal class PokemonSpeciesRepositoryImplTest {
         }
     }
 
-    @Test
-    fun `should get species evolution from remote data source when chain url is present`() =
-        runTest {
-            val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
-                coEvery { fetchEvolutionChain(any()) } returns mockk()
+    @Nested
+    inner class TestGetSpeciesEvolution {
+        @Test
+        fun `should get from remote data with evolution details source when chain url is present`() =
+            runTest {
+                val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
+                    coEvery { fetchEvolutionChain(any()) } returns mockk()
+                    coEvery { fetchPokemonDetails(any()) } returns PokemonSpeciesDetailsDto(
+                        43L,
+                        "evolved",
+                        emptyList(),
+                        null,
+                        10
+                    )
+                }
+                val localDataSource = mockk<PokemonSpeciesLocalDataSource> {
+                    every { getSpecies(any()) } returns flowOf(
+                        buildSpeciesEntity().copy(
+                            evolutionChainUrl = "url",
+                            captureRate = 5,
+                        )
+                    )
+                }
+                val evolutionChainDtoMapper = mockk<EvolutionChainDtoMapper> {
+                    every { map(any(), any()) } returns SpeciesEntity.Evolution.EvolvesTo(
+                        43L,
+                        "evolved",
+                        "image"
+                    )
+                }
+                val pokemonSpeciesDetailsDtoMapper = mockk<PokemonSpeciesDetailsDtoMapper> {
+                    every { map(any()) } returns UpdateSpeciesDetails(43L, "desc", 10, "url")
+                }
+
+                val repository = PokemonSpeciesRepositoryImpl(
+                    remoteDataSource,
+                    localDataSource,
+                    mockk(),
+                    mockk(),
+                    pokemonSpeciesDetailsDtoMapper,
+                    evolutionChainDtoMapper,
+                    mockk(),
+                )
+
+                val result = repository.getSpeciesEvolution(42L)
+
+                result.isSuccess shouldBe true
+                coVerifyOrder {
+                    localDataSource.getSpecies(42L)
+                    remoteDataSource.fetchEvolutionChain("url")
+                    evolutionChainDtoMapper.map(any(), "name")
+                    remoteDataSource.fetchPokemonDetails(43L)
+                    localDataSource.updateDetails(UpdateSpeciesDetails(43L, "desc", 10, "url"))
+                    localDataSource.updateCaptureRateDifference(
+                        UpdateCaptureRateDifference(
+                            42L,
+                            -5
+                        )
+                    )
+                    localDataSource.updateEvolution(
+                        UpdateSpeciesEvolution(
+                            42L, SpeciesEntity.Evolution.EvolvesTo(
+                                43L,
+                                "evolved",
+                                "image"
+                            )
+                        )
+                    )
+                }
             }
+
+        @Test
+        fun `should update to final evolution when chain url is absent`() = runTest {
+            val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource>()
             val localDataSource = mockk<PokemonSpeciesLocalDataSource> {
                 every { getSpecies(any()) } returns flowOf(
-                    buildSpeciesEntity().copy(
-                        evolutionChainUrl = "url"
-                    )
+                    buildSpeciesEntity().copy(evolutionChainUrl = null)
                 )
             }
-            val evolutionChainDtoMapper = mockk<EvolutionChainDtoMapper> {
-                every { map(any(), any()) } returns SpeciesEntity.Evolution.Final
-            }
+            val evolutionChainDtoMapper = mockk<EvolutionChainDtoMapper>()
+            val pokemonSpeciesDetailsDtoMapper = mockk<PokemonSpeciesDetailsDtoMapper>()
 
             val repository = PokemonSpeciesRepositoryImpl(
                 remoteDataSource,
                 localDataSource,
                 mockk(),
                 mockk(),
-                mockk(),
+                pokemonSpeciesDetailsDtoMapper,
                 evolutionChainDtoMapper,
                 mockk(),
             )
@@ -254,47 +321,17 @@ internal class PokemonSpeciesRepositoryImplTest {
             result.isSuccess shouldBe true
             coVerifyOrder {
                 localDataSource.getSpecies(42L)
-                remoteDataSource.fetchEvolutionChain("url")
-                evolutionChainDtoMapper.map(any(), "name")
                 localDataSource.updateEvolution(
                     UpdateSpeciesEvolution(42L, SpeciesEntity.Evolution.Final)
                 )
             }
         }
-
-    @Test
-    fun `should update species evolution to final when chain url is absent`() = runTest {
-        val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
-            coEvery { fetchEvolutionChain(any()) } returns mockk()
-        }
-        val localDataSource = mockk<PokemonSpeciesLocalDataSource> {
-            every { getSpecies(any()) } returns flowOf(buildSpeciesEntity().copy(evolutionChainUrl = null))
-        }
-
-        val repository = PokemonSpeciesRepositoryImpl(
-            remoteDataSource,
-            localDataSource,
-            mockk(),
-            mockk(),
-            mockk(),
-            mockk(),
-            mockk(),
-        )
-
-        val result = repository.getSpeciesEvolution(42L)
-
-        result.isSuccess shouldBe true
-        coVerifyOrder {
-            localDataSource.getSpecies(42L)
-            localDataSource.updateEvolution(
-                UpdateSpeciesEvolution(42L, SpeciesEntity.Evolution.Final)
-            )
-        }
     }
 
-    @Test
-    fun `should not get species details and evolution from remote data source when both are present`() =
-        runTest {
+    @Nested
+    inner class TestGetSpeciesDetails {
+        @Test
+        fun `should not get from remote data source when has cached data`() = runTest {
             val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
                 coEvery { fetchEvolutionChain(any()) } returns mockk()
             }
@@ -324,18 +361,19 @@ internal class PokemonSpeciesRepositoryImplTest {
             coVerify(exactly = 0) { remoteDataSource.fetchPokemonDetails(any()) }
         }
 
-    @Test
-    fun `should get species details and evolution from remote data source when description and evolution are absent`() =
-        runTest {
+        @Test
+        fun `should get from remote data source when there are no cached data`() = runTest {
             val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
                 coEvery { fetchEvolutionChain(any()) } returns mockk()
-                coEvery { fetchPokemonDetails(any()) } returns mockk()
+                coEvery { fetchPokemonDetails(any()) } returns PokemonSpeciesDetailsDto(
+                    42L, "name", emptyList(), null, 10
+                )
             }
             val localDataSource = mockk<PokemonSpeciesLocalDataSource> {
                 every { getSpecies(any()) } returns flowOf(
                     buildSpeciesEntity().copy(
                         description = null,
-                        evolution = null
+                        evolution = null,
                     )
                 )
             }
@@ -348,7 +386,9 @@ internal class PokemonSpeciesRepositoryImplTest {
                 )
             }
             val evolutionChainDtoMapper = mockk<EvolutionChainDtoMapper> {
-                every { map(any(), any()) } returns SpeciesEntity.Evolution.Final
+                every {
+                    map(any(), any())
+                } returns SpeciesEntity.Evolution.EvolvesTo(43L, "evolved", "image")
             }
 
             val repository = PokemonSpeciesRepositoryImpl(
@@ -369,68 +409,73 @@ internal class PokemonSpeciesRepositoryImplTest {
                 remoteDataSource.fetchPokemonDetails(42L)
                 pokemonSpeciesDetailsDtoMapper.map(any())
                 localDataSource.updateDetails(any())
+                localDataSource.getSpecies(42L)
                 remoteDataSource.fetchEvolutionChain("chain url")
                 evolutionChainDtoMapper.map(any(), "name")
+                remoteDataSource.fetchPokemonDetails(43L)
+                localDataSource.updateDetails(any())
+                localDataSource.updateCaptureRateDifference(UpdateCaptureRateDifference(42L, 0))
                 localDataSource.updateEvolution(
-                    UpdateSpeciesEvolution(42L, SpeciesEntity.Evolution.Final)
-                )
-            }
-        }
-
-    @Test
-    fun `should get species evolution from remote data source when getting details and description is present but evolution is not`() =
-        runTest {
-            val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
-                coEvery { fetchEvolutionChain(any()) } returns mockk()
-                coEvery { fetchPokemonDetails(any()) } returns mockk()
-            }
-            val localDataSource = mockk<PokemonSpeciesLocalDataSource> {
-                every { getSpecies(any()) } returns flowOf(
-                    buildSpeciesEntity().copy(
-                        description = "description",
-                        evolution = null
+                    UpdateSpeciesEvolution(
+                        42L,
+                        SpeciesEntity.Evolution.EvolvesTo(43L, "evolved", "image")
                     )
                 )
             }
-            val pokemonSpeciesDetailsDtoMapper = mockk<PokemonSpeciesDetailsDtoMapper> {
-                every { map(any()) } returns UpdateSpeciesDetails(
-                    42L,
-                    "description",
-                    42,
-                    "chain url"
-                )
-            }
-            val evolutionChainDtoMapper = mockk<EvolutionChainDtoMapper> {
-                every { map(any(), any()) } returns SpeciesEntity.Evolution.Final
-            }
-
-            val repository = PokemonSpeciesRepositoryImpl(
-                remoteDataSource,
-                localDataSource,
-                mockk(),
-                mockk(),
-                pokemonSpeciesDetailsDtoMapper,
-                evolutionChainDtoMapper,
-                mockk(),
-            )
-
-            val result = repository.getSpeciesDetails(42L)
-
-            result.isSuccess shouldBe true
-            coVerifyOrder {
-                localDataSource.getSpecies(42L)
-                localDataSource.getSpecies(42L)
-                remoteDataSource.fetchEvolutionChain("chain url")
-                evolutionChainDtoMapper.map(any(), "name")
-                localDataSource.updateEvolution(
-                    UpdateSpeciesEvolution(42L, SpeciesEntity.Evolution.Final)
-                )
-            }
         }
 
-    @Test
-    fun `should set species evolution to final when getting details and evolution url is absent`() =
-        runTest {
+        @Test
+        fun `should get species evolution from remote data source details are present but evolution is not`() =
+            runTest {
+                val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
+                    coEvery { fetchEvolutionChain(any()) } returns mockk()
+                    coEvery { fetchPokemonDetails(any()) } returns mockk()
+                }
+                val localDataSource = mockk<PokemonSpeciesLocalDataSource> {
+                    every { getSpecies(any()) } returns flowOf(
+                        buildSpeciesEntity().copy(
+                            description = "description",
+                            evolution = null
+                        )
+                    )
+                }
+                val pokemonSpeciesDetailsDtoMapper = mockk<PokemonSpeciesDetailsDtoMapper> {
+                    every { map(any()) } returns UpdateSpeciesDetails(
+                        42L,
+                        "description",
+                        42,
+                        "chain url"
+                    )
+                }
+                val evolutionChainDtoMapper = mockk<EvolutionChainDtoMapper> {
+                    every { map(any(), any()) } returns SpeciesEntity.Evolution.Final
+                }
+
+                val repository = PokemonSpeciesRepositoryImpl(
+                    remoteDataSource,
+                    localDataSource,
+                    mockk(),
+                    mockk(),
+                    pokemonSpeciesDetailsDtoMapper,
+                    evolutionChainDtoMapper,
+                    mockk(),
+                )
+
+                val result = repository.getSpeciesDetails(42L)
+
+                result.isSuccess shouldBe true
+                coVerifyOrder {
+                    localDataSource.getSpecies(42L)
+                    remoteDataSource.fetchEvolutionChain("chain url")
+                    evolutionChainDtoMapper.map(any(), "name")
+                    localDataSource.updateEvolution(
+                        UpdateSpeciesEvolution(42L, SpeciesEntity.Evolution.Final)
+                    )
+                }
+            }
+
+        @Test
+        fun `should set species evolution to final when evolution url is absent`() = runTest {
             val remoteDataSource = mockk<PokemonSpeciesRemoteDataSource> {
                 coEvery { fetchEvolutionChain(any()) } returns mockk()
                 coEvery { fetchPokemonDetails(any()) } returns mockk()
@@ -466,8 +511,9 @@ internal class PokemonSpeciesRepositoryImplTest {
             }
             coVerify(exactly = 0) { remoteDataSource.fetchEvolutionChain(any()) }
         }
+    }
 
     private fun buildSpeciesEntity(): SpeciesEntity {
-        return SpeciesEntity(42L, "name", "imageUrl", "description", 42, "chain url", null)
+        return SpeciesEntity(42L, "name", "imageUrl", "description", 42, "chain url", null, 24)
     }
 }

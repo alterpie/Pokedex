@@ -97,10 +97,7 @@ internal fun PokemonDetailsScreen(
                     if (loading) {
                         LoadingDetailsPlaceholder()
                     } else {
-                        DetailsSection(
-                            description = state.description,
-                            captureRate = state.captureRate
-                        )
+                        DetailsSection(description = state.description)
                     }
                 }
             }
@@ -111,7 +108,10 @@ internal fun PokemonDetailsScreen(
                     if (loading) {
                         LoadingEvolutionPlaceholder()
                     } else {
-                        EvolutionSection(evolution = state.evolution)
+                        EvolutionSection(
+                            evolution = state.evolution,
+                            captureRateDifference = state.captureRateDifference
+                        )
                     }
                 }
             } else if (state.error is State.Error.LoadingEvolutionFailed) {
@@ -149,46 +149,20 @@ private fun TopAppBar(onBackClick: () -> Unit) {
 }
 
 @Composable
-private fun DetailsSection(description: String, captureRate: Int?) {
+private fun DetailsSection(description: String) {
     Column {
         BasicText(
             text = description,
             style = MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.onBackground)
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        if (captureRate != null) {
-            val captureRateColor = if (captureRate < 0) {
-                MaterialTheme.colors.error
-            } else {
-                MaterialTheme.colors.secondary
-            }
-
-            val captureRateLabel = buildAnnotatedString {
-                val captureRateValue = kotlin.math.abs(captureRate)
-                val text = stringResource(
-                    DesignR.string.template_capture_rate,
-                    captureRateValue
-                )
-                append(text)
-                val startIndex = text.indexOf(captureRateValue.toString())
-                val endIndex = startIndex + captureRateValue.toString().length
-                addStyle(
-                    SpanStyle(color = captureRateColor),
-                    startIndex,
-                    endIndex
-                )
-            }
-            BasicText(
-                text = captureRateLabel,
-                style = MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.onBackground)
-            )
-        }
     }
-
 }
 
 @Composable
-private fun EvolutionSection(evolution: PokemonSpecies.Evolution?) {
+private fun EvolutionSection(
+    evolution: PokemonSpecies.Evolution?,
+    captureRateDifference: Int?
+) {
     Column {
         when (evolution) {
             PokemonSpecies.Evolution.Final -> {
@@ -198,6 +172,34 @@ private fun EvolutionSection(evolution: PokemonSpecies.Evolution?) {
                 )
             }
             is PokemonSpecies.Evolution.EvolvesTo -> {
+                if (captureRateDifference != null) {
+                    val captureRateColor = if (captureRateDifference < 0) {
+                        MaterialTheme.colors.error
+                    } else {
+                        MaterialTheme.colors.secondary
+                    }
+
+                    val captureRateLabel = buildAnnotatedString {
+                        val captureRateValue = kotlin.math.abs(captureRateDifference)
+                        val text = stringResource(
+                            DesignR.string.template_capture_rate_difference,
+                            captureRateValue
+                        )
+                        append(text)
+                        val startIndex = text.indexOf(captureRateValue.toString())
+                        val endIndex = startIndex + captureRateValue.toString().length
+                        addStyle(
+                            SpanStyle(color = captureRateColor),
+                            startIndex,
+                            endIndex
+                        )
+                    }
+                    BasicText(
+                        text = captureRateLabel,
+                        style = MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.onBackground)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
                 BasicText(
                     text = stringResource(DesignR.string.evolves_to),
                     style = MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.onBackground)
@@ -276,13 +278,6 @@ private fun LoadingDetailsPlaceholder() {
                 .background(color = color)
                 .size(width = 110.dp, height = 28.dp)
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
-                .background(color = color)
-                .size(width = 110.dp, height = 28.dp)
-        )
     }
 }
 
@@ -308,6 +303,13 @@ private fun LoadingEvolutionPlaceholder() {
         )
     )
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = bgColor)
+                .size(width = 110.dp, height = 28.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))

@@ -19,21 +19,21 @@ internal class SpeciesEvolutionTypeConverterTest {
     @Test
     fun `should map from class of next evolution link to string representation`() {
         val converter = SpeciesEvolutionTypeConverter()
-        val evolution = SpeciesEntity.Evolution.EvolvesTo("name", "image")
+        val evolution = SpeciesEntity.Evolution.EvolvesTo(42L, "name", "image")
 
         val actual = converter.fromEvolution(evolution)
 
-        actual shouldBe "name image"
+        actual shouldBe "42 name image"
     }
 
     @Test
     fun `should map from string to class of next evolution link model`() {
         val converter = SpeciesEvolutionTypeConverter()
-        val evolutionRaw = "name imageUrl"
+        val evolutionRaw = "42 name imageUrl"
 
         val actual = converter.fromString(evolutionRaw)
 
-        actual shouldBe SpeciesEntity.Evolution.EvolvesTo("name", "imageUrl")
+        actual shouldBe SpeciesEntity.Evolution.EvolvesTo(42L, "name", "imageUrl")
     }
 
     @Test

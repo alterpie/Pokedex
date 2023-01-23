@@ -86,7 +86,7 @@ internal class PokemonDetailsReducerTest {
             newState.id shouldBe 42
             newState.name shouldBe "name"
             newState.description shouldBe "description"
-            newState.captureRate shouldBe 42
+            newState.captureRateDifference shouldBe 42
             newState.imageUrl shouldBe "image"
             newState.evolution shouldBe PokemonSpecies.Evolution.Final
         }

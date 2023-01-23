@@ -30,7 +30,7 @@ interface PokemonDetailsContract {
         val name: String = "",
         val description: String = "",
         val imageUrl: String? = null,
-        val captureRate: Int? = null,
+        val captureRateDifference: Int? = null,
         val evolution: PokemonSpecies.Evolution? = null,
         val loadingDetails: Boolean = true,
         val loadingEvolution: Boolean = true,

@@ -1,10 +1,11 @@
 package com.assignment.catawiki.pokemon.species.data.species.local
 
 import com.assignment.catawiki.pokemon.species.data.species.local.model.SpeciesEntity
+import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateCaptureRateDifference
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesDetails
 import com.assignment.catawiki.pokemon.species.data.species.local.model.UpdateSpeciesEvolution
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 internal class PokemonSpeciesLocalDataSourceImpl @Inject constructor(
     private val speciesDao: SpeciesDao,
@@ -30,8 +31,12 @@ internal class PokemonSpeciesLocalDataSourceImpl @Inject constructor(
         speciesDao.updateEvolution(updateSpeciesEvolution)
     }
 
+    override suspend fun updateCaptureRateDifference(updateCaptureRateDifference: UpdateCaptureRateDifference) {
+        speciesDao.updateCaptureDifferenceRate(updateCaptureRateDifference)
+    }
+
     override suspend fun removeAll() {
-       speciesDao.deleteAll()
+        speciesDao.deleteAll()
     }
 
     override suspend fun getCount(): Long {

@@ -10,14 +10,15 @@ internal class EvolutionChainDtoMapper @Inject constructor() {
 
     fun map(
         from: EvolutionChainDto,
-        forSpeciesName: String
+        forSpeciesName: String,
     ): SpeciesEntity.Evolution = with(from) {
         val species = findEvolutionTargetSpecies(from.chain, forSpeciesName)
             ?: return@with SpeciesEntity.Evolution.Final
         val id = Uri.parse(species.url).pathSegments.last().toLong()
         SpeciesEntity.Evolution.EvolvesTo(
+            id,
             species.name,
-            "${BuildConfig.POKEMON_IMAGE_URL}${id}.png"
+            "${BuildConfig.POKEMON_IMAGE_URL}${id}.png",
         )
     }
 
