@@ -53,7 +53,7 @@ private object NetworkModule {
         networkAvailabilityInterceptor: NetworkAvailabilityInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addNetworkInterceptor(networkAvailabilityInterceptor)
+            .addInterceptor(networkAvailabilityInterceptor)
             .apply {
                 if (BuildConfig.DEBUG) addInterceptor(httpLoggingInterceptor)
             }

@@ -1,14 +1,17 @@
 package com.assignment.catawiki.network.interceptor
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import com.assignment.catawiki.network.error.NetworkNotAvailableError
+import java.net.HttpURLConnection
 import javax.inject.Inject
 import okhttp3.Interceptor
+import okhttp3.Protocol
 import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
+
+const val ERROR_MESSAGE_NETWORK_NOT_AVAILABLE = "network is not available"
 
 class NetworkAvailabilityInterceptor @Inject constructor(context: Context) : Interceptor {
 
@@ -16,7 +19,15 @@ class NetworkAvailabilityInterceptor @Inject constructor(context: Context) : Int
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        if (!isAvailable()) throw NetworkNotAvailableError()
+        if (!isAvailable()) {
+            return Response.Builder()
+                .request(chain.request())
+                .protocol(Protocol.HTTP_1_1)
+                .code(HttpURLConnection.HTTP_BAD_REQUEST)
+                .message(ERROR_MESSAGE_NETWORK_NOT_AVAILABLE)
+                .body(ERROR_MESSAGE_NETWORK_NOT_AVAILABLE.toResponseBody(null))
+                .build()
+        }
 
         return chain.proceed(chain.request())
     }
