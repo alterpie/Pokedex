@@ -1,13 +1,18 @@
 package com.yerastov.assignment.pokedex.feature.feed.ui
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,18 +48,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
 import com.yerastov.assignment.pokedex.design.button.TextButton
 import com.yerastov.assignment.pokedex.design.gradient.BottomGradient
 import com.yerastov.assignment.pokedex.design.gradient.TopGradient
@@ -162,18 +173,71 @@ private fun PokemonItem(
             .height(60.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Image(
-            modifier = Modifier.size(70.dp),
-            painter = rememberAsyncImagePainter(model = image),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-        )
+        PokemonItemImage(image = image)
 
         BasicText(
             modifier = Modifier.padding(horizontal = 16.dp),
             text = name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
             style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.onSurface),
         )
+    }
+}
+
+@Composable
+private fun PokemonItemImage(image: String) {
+    val imageSize = 70.dp
+    var state by remember { mutableStateOf<AsyncImagePainter.State?>(null) }
+    Box {
+        Image(
+            modifier = Modifier.size(imageSize),
+            painter = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(image)
+                    .size(Size.ORIGINAL)
+                    .build(),
+                onState = { state = it },
+            ),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+        )
+        AnimatedVisibility(
+            visible = state is AsyncImagePainter.State.Loading,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            val colorTransition = rememberInfiniteTransition()
+            val color by colorTransition.animateColor(
+                initialValue = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
+                targetValue = MaterialTheme.colors.onSurface.copy(alpha = 0.2f),
+                animationSpec = infiniteRepeatable(
+                    animation = tween(1000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse,
+                )
+            )
+            Box(
+                modifier = Modifier
+                    .size(imageSize)
+                    .background(color = color, shape = RoundedCornerShape(8.dp))
+            )
+        }
+        AnimatedVisibility(
+            visible = state is AsyncImagePainter.State.Error,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            Image(
+                painter = painterResource(DesignR.drawable.ic_loading_failed),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.surface),
+                modifier = Modifier
+                    .size(imageSize)
+                    .background(
+                        color = MaterialTheme.colors.onSurface,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(8.dp),
+            )
+        }
     }
 }
 
