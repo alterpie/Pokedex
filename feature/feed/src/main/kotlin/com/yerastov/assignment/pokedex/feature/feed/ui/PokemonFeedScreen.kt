@@ -72,19 +72,11 @@ internal fun PokemonFeedScreen(
     onRetryClick: () -> Unit,
     onPopupErrorShown: () -> Unit,
 ) {
-    val context = LocalContext.current
-    LaunchedEffect(state.loadingError) {
-        val messageRes = when (state.loadingError) {
-            State.LoadingError.PaginationFailed -> DesignR.string.error_loading_feed_next_page_failed
-            State.LoadingError.RefreshFailed -> DesignR.string.error_refresh_feed_failed
-            State.LoadingError.InitialFailed -> null
-            null -> null
-        }
-        messageRes?.let {
-            Toast.makeText(context, context.getString(messageRes), Toast.LENGTH_LONG).show()
-            onPopupErrorShown()
-        }
-    }
+    LoadingErrorHandler(
+        loadingError = state.loadingError,
+        onPopupErrorShown = onPopupErrorShown
+    )
+
     val refreshing = state.loadingState is State.LoadingState.Refresh
     val pullRefreshState = rememberPullRefreshState(
         refreshing = refreshing,
@@ -270,6 +262,26 @@ private fun BoxScope.InitialLoadingFailedSection(onRetryClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(text = stringResource(DesignR.string.retry), onClick = onRetryClick)
+    }
+}
+
+@Composable
+private fun LoadingErrorHandler(
+    loadingError: State.LoadingError?,
+    onPopupErrorShown: () -> Unit
+) {
+    val context = LocalContext.current
+    LaunchedEffect(loadingError) {
+        val messageRes = when (loadingError) {
+            State.LoadingError.PaginationFailed -> DesignR.string.error_loading_feed_next_page_failed
+            State.LoadingError.RefreshFailed -> DesignR.string.error_refresh_feed_failed
+            State.LoadingError.InitialFailed -> null
+            null -> null
+        }
+        messageRes?.let {
+            Toast.makeText(context, context.getString(messageRes), Toast.LENGTH_LONG).show()
+            onPopupErrorShown()
+        }
     }
 }
 
