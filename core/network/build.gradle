@@ -6,7 +6,7 @@ plugins {
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-library.gradle"
 
 android {
-    namespace 'com.assignment.catawiki.network'
+    namespace 'com.yerastov.assignment.pokedex.core.network'
 
     defaultConfig {
         buildConfigField("String", "HOST", "\"pokeapi.co\"")

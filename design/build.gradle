@@ -6,7 +6,7 @@ apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-libra
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-compose.gradle"
 
 android {
-    namespace 'com.assignment.catawiki.design'
+    namespace 'com.yerastov.assignment.pokedex.design'
 }
 
 dependencies {

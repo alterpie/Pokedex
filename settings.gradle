@@ -15,7 +15,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Catawiki"
+rootProject.name = "Pokedex"
 include (
     ':app',
     ':design',

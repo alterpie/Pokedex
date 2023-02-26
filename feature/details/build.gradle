@@ -8,7 +8,7 @@ apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-compo
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/unit-tests.gradle"
 
 android {
-    namespace 'com.assignment.catawiki.details'
+    namespace 'com.yerastov.assignment.pokedex.feature.details'
 }
 
 dependencies {

@@ -9,7 +9,7 @@ apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-libra
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/unit-tests.gradle"
 
 android {
-    namespace 'com.assignment.catawiki.pokemon.species'
+    namespace 'com.yerastov.assignment.pokedex.core.pokemon.species'
 
     defaultConfig {
         buildConfigField("String", "POKEMON_IMAGE_URL", "\"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\"")

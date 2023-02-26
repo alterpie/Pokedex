@@ -5,7 +5,7 @@ plugins {
 apply from: "${rootProject.projectDir}/config/gradle/build-scripts/android-library.gradle"
 
 android {
-    namespace 'com.assignment.catawiki.mvi'
+    namespace 'com.yerastov.assignment.pokedex.mvi'
 }
 
 dependencies {
