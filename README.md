@@ -42,6 +42,10 @@ Such architecture is easily scalable since another handlers for screen contract'
 6. One time events are handled as part of the State updates as recommended by [Google](https://developer.android.com/topic/architecture/ui-layer/events#handle-viewmodel-events) for Compose architecture.
 7. Gradle setup is done via separate scripts for different types of modules/functionality
 
-App architecture could be described by following scheme(without some intermediate abstractions as use cases):
+The interaction of UI and presentation layer could be described as following:
 
-![App arch](assets/arch_scheme.png)
+![UI-Presentation](assets/arch_ui_presentation.png)
+
+The setup of Domain/data layer could be described as following:
+
+![Domain-Data](assets/arch_domain_data.png)
